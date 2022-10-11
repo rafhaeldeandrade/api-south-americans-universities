@@ -1,0 +1,7 @@
+{
+  "name": "south-american-universities-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Rafhael Gomes <rafhael@protonmail.com>",
+  "license": "MIT"
+}
