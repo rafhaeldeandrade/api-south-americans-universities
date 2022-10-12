@@ -12,3 +12,14 @@ export interface LoadUniversitiesRepository {
     props: LoadUniversitiesRepositoryInput
   ) => Promise<LoadUniversitiesRepositoryOutput>
 }
+
+export type CountTotalDocumentsRepositoryInput = {
+  country?: string
+}
+
+export type CountTotalDocumentsRepositoryOutput = number
+export interface CountTotalDocumentsRepository {
+  count: (
+    props: CountTotalDocumentsRepositoryInput
+  ) => Promise<CountTotalDocumentsRepositoryOutput>
+}
