@@ -20,3 +20,10 @@ export function internalServerError(): HttpResponse {
     }
   }
 }
+
+export function ok(data: any): HttpResponse {
+  return {
+    statusCode: 200,
+    body: data
+  }
+}
