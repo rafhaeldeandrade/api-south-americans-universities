@@ -6,11 +6,13 @@ import {
 } from '@/data/contracts'
 import { LoadUniversitiesUseCaseInput } from '@/domain/contracts'
 
+const LoadUniversitiesRepositoryStubReturn: LoadUniversitiesRepositoryOutput =
+  []
 class LoadUniversitiesRepositoryStub implements LoadUniversitiesRepository {
   async load(
     props: LoadUniversitiesRepositoryInput
   ): Promise<LoadUniversitiesRepositoryOutput> {
-    return []
+    return LoadUniversitiesRepositoryStubReturn
   }
 }
 
@@ -46,5 +48,15 @@ describe('LoadUniversitiesUseCase', () => {
     await sut.load(props)
     expect(loadSpy).toHaveBeenCalledTimes(1)
     expect(loadSpy).toHaveBeenCalledWith(props)
+  })
+
+  it('should throw if loadUniversitiesRepository throws', async () => {
+    const { sut, loadUniversitiesRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadUniversitiesRepositoryStub, 'load')
+      .mockRejectedValueOnce(new Error())
+    const props = {} as LoadUniversitiesUseCaseInput
+    const promise = sut.load(props)
+    await expect(promise).rejects.toThrow()
   })
 })
