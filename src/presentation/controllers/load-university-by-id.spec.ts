@@ -63,9 +63,13 @@ describe('LoadUniversityById Controller', () => {
       params: {}
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(
-      badRequest(new MissingParamError('universityId'))
-    )
+    expect(httpResponse).toEqual({
+      statusCode: 400,
+      body: {
+        error: true,
+        MissingParamError: 'Missing param: universityId'
+      }
+    })
   })
 
   it('should call loadUniversityByIdUseCase with the correct values', async () => {
@@ -94,6 +98,26 @@ describe('LoadUniversityById Controller', () => {
       }
     }
     const promise = sut.handle(httpRequest)
-    await expect(promise).resolves.toEqual(internalServerError())
+    await expect(promise).resolves.toEqual({
+      statusCode: 500,
+      body: {
+        error: true,
+        InternalServerError: 'Something went wrong, try again later'
+      }
+    })
+  })
+
+  it('should return 200 with the correct value on success', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      params: {
+        universityId: faker.datatype.uuid()
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual({
+      statusCode: 200,
+      body: LoadUniversityByIdUseCaseStubReturn
+    })
   })
 })
