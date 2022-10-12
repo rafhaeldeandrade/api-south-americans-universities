@@ -129,4 +129,20 @@ describe('AddUniversity Controller', () => {
       webPages: httpRequest?.body?.webPages
     })
   })
+
+  it('should return 500 if addUniversityUseCase throws an error', async () => {
+    const { sut, addUniversityUseCaseStub } = makeSut()
+    const httpRequest = mockRequest()
+    jest
+      .spyOn(addUniversityUseCaseStub, 'add')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 500,
+      body: {
+        error: true,
+        InternalServerError: 'Something went wrong, try again later'
+      }
+    })
+  })
 })
