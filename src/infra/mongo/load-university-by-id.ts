@@ -10,11 +10,7 @@ export class MongoLoadUniversityById implements LoadUniversityByIdRepository {
     id: LoadUniversityByIdRepositoryInput
   ): Promise<LoadUniversityByIdRepositoryOutput> {
     try {
-      const university = await UniversityModel.findOne(
-        { _id: id },
-        {},
-        { lean: true }
-      )
+      const university = await UniversityModel.findById(id, {}, { lean: true })
       if (!university) return null
       return {
         id: university._id.toString(),
