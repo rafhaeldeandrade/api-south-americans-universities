@@ -69,4 +69,20 @@ describe('AddUniversity Controller', () => {
       }
     })
   })
+
+  it('should return 500 if schemaValidator.validate throws an error', async () => {
+    const { sut, schemaValidationStub } = makeSut()
+    const httpRequest = mockRequest()
+    jest
+      .spyOn(schemaValidationStub, 'validate')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 500,
+      body: {
+        error: true,
+        InternalServerError: 'Something went wrong, try again later'
+      }
+    })
+  })
 })
