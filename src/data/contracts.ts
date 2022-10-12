@@ -1,4 +1,4 @@
-import { SavedUniversity } from '@/domain/contracts'
+import { SavedUniversity, University } from '@/domain/contracts'
 
 export type LoadUniversitiesRepositoryInput = {
   skip: number
@@ -46,4 +46,14 @@ export interface LoadUniversityByPropsRepository {
   load: (
     props: LoadUniversityBypropsRepositoryInput
   ) => Promise<LoadUniversityByIdRepositoryOutput>
+}
+
+export type AddUniversityRepositoryInput = University
+
+export type AddUniversityRepositoryOutput = SavedUniversity | null
+
+export interface AddUniversityRepository {
+  add: (
+    props: AddUniversityRepositoryInput
+  ) => Promise<AddUniversityRepositoryOutput>
 }
