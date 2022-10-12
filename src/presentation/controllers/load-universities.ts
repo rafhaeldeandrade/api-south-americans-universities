@@ -14,7 +14,7 @@ export class LoadUniversitiesController {
 
   async handle(httpRequest: HttpRequest) {
     try {
-      if (isNaN(httpRequest?.query?.page)) {
+      if (httpRequest?.query?.page && isNaN(httpRequest.query.page)) {
         return badRequest(new InvalidParamError('Page must be a number'))
       }
       const universities = await this.loadUniversitiesUseCase.load({
