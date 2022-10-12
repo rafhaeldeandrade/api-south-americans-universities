@@ -33,3 +33,17 @@ export interface LoadUniversityByIdRepository {
     id: LoadUniversityByIdRepositoryInput
   ) => Promise<LoadUniversityByIdRepositoryOutput>
 }
+
+export type LoadUniversityBypropsRepositoryInput = {
+  name?: string
+  country?: string
+  stateProvince?: string | null
+}
+
+export type LoadUniversityBypropsRepositoryOutput = SavedUniversity | null
+
+export interface LoadUniversityByPropsRepository {
+  load: (
+    props: LoadUniversityBypropsRepositoryInput
+  ) => Promise<LoadUniversityByIdRepositoryOutput>
+}
