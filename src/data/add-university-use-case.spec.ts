@@ -73,6 +73,16 @@ describe('AddUniversity use case', () => {
     })
   })
 
+  it('should throw if loadUniversityByProps.load throws', async () => {
+    const { sut, loadUniversityByPropsRepositoryStub } = makeSut()
+    const props = mockProps()
+    jest
+      .spyOn(loadUniversityByPropsRepositoryStub, 'load')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.add(props)
+    await expect(promise).rejects.toThrow()
+  })
+
   it('should return null if loadUniversityByProps.load have found a university', async () => {
     const { sut, loadUniversityByPropsRepositoryStub } = makeSut()
     const props = mockProps()
