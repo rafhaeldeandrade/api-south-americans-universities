@@ -10,9 +10,14 @@ interface HttpRequestParams {
   [key: string]: any
 }
 
+interface HttpRequestBody {
+  [key: string]: any
+}
+
 export interface HttpRequest {
   query?: HttpRequestQuery
   params?: HttpRequestParams
+  body?: HttpRequestBody
 }
 
 interface HttpResponseBody {
@@ -22,4 +27,8 @@ interface HttpResponseBody {
 export interface HttpResponse {
   statusCode: number
   body: HttpResponseBody
+}
+
+export interface SchemaValidator {
+  validate: (input: any) => Promise<Error | null>
 }
