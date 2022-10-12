@@ -8,6 +8,7 @@ import {
 import {
   badRequest,
   conflict,
+  created,
   internalServerError
 } from '@/presentation/helpers/http-helper'
 import { ResourceAlreadyExistsError } from '../errors'
@@ -34,7 +35,7 @@ export class AddUniversityController implements Controller {
         return conflict(
           new ResourceAlreadyExistsError('University already exists')
         )
-      return null as unknown as HttpResponse
+      return created(savedUniversity)
     } catch (e) {
       return internalServerError()
     }

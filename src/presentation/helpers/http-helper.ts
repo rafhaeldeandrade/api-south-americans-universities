@@ -47,3 +47,10 @@ export function conflict(error: ResourceAlreadyExistsError): HttpResponse {
     }
   }
 }
+
+export function created(data: any): HttpResponse {
+  return {
+    statusCode: 201,
+    body: data
+  }
+}
