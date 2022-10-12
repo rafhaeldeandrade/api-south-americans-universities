@@ -159,4 +159,14 @@ describe('AddUniversity Controller', () => {
       }
     })
   })
+
+  it('should return 201 on success', async () => {
+    const { sut } = makeSut()
+    const httpRequest = mockRequest()
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 201,
+      body: AddUniversityUseCaseStubReturn
+    })
+  })
 })
