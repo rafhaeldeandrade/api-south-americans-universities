@@ -36,7 +36,7 @@ export type LoadUniversityByIdUseCaseInput = {
   universityId: string
 }
 
-export type LoadUniversityByIdUseCaseOutput = SavedUniversity
+export type LoadUniversityByIdUseCaseOutput = SavedUniversity | null
 
 export interface LoadUniversityByIdUseCase {
   load: (

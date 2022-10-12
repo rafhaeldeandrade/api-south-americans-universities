@@ -23,7 +23,7 @@ describe('MongoLoadTotalDocuments Integration Test', () => {
   })
 
   it('should return the correct values when only skip and limit are provided', async () => {
-    const TOTAL_DOCUMENTS = faker.datatype.number(200)
+    const TOTAL_DOCUMENTS = faker.datatype.number(80)
     const fakeUniversities = Array.from({ length: TOTAL_DOCUMENTS }).map(
       () => ({
         _id: new mongoose.Types.ObjectId().toHexString(),
@@ -55,7 +55,8 @@ describe('MongoLoadTotalDocuments Integration Test', () => {
 
   it('should return the correct total documents when country prop is provided', async () => {
     const TOTAL_DOCUMENTS_WITH_BRAZIL_AS_COUNTRY = faker.datatype.number({
-      min: 100
+      min: 100,
+      max: 200
     })
     const TOTAL_DOCUMENTS_WITH_OTHER_COUNTRIES = faker.datatype.number(200)
     const fakeBrazilianUniversities = Array.from({

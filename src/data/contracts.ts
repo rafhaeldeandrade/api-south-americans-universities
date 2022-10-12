@@ -27,7 +27,7 @@ export interface CountTotalDocumentsRepository {
 
 export type LoadUniversityByIdRepositoryInput = string
 
-export type LoadUniversityByIdRepositoryOutput = SavedUniversity
+export type LoadUniversityByIdRepositoryOutput = SavedUniversity | null
 export interface LoadUniversityByIdRepository {
   load: (
     id: LoadUniversityByIdRepositoryInput
