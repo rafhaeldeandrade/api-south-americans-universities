@@ -22,7 +22,7 @@ class LoadUniversityByPropsRepositoryStub
   async load(
     university: LoadUniversityBypropsRepositoryInput
   ): Promise<LoadUniversityBypropsRepositoryOutput> {
-    return LoadUniversityByPropsRepositoryStubReturn
+    return null
   }
 }
 
@@ -71,5 +71,15 @@ describe('AddUniversity use case', () => {
       stateProvince: props.stateProvince,
       name: props.name
     })
+  })
+
+  it('should return null if loadUniversityByProps.load have found a university', async () => {
+    const { sut, loadUniversityByPropsRepositoryStub } = makeSut()
+    const props = mockProps()
+    jest
+      .spyOn(loadUniversityByPropsRepositoryStub, 'load')
+      .mockResolvedValueOnce(LoadUniversityByPropsRepositoryStubReturn)
+    const promise = sut.add(props)
+    await expect(promise).resolves.toBeNull()
   })
 })
