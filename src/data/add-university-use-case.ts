@@ -13,11 +13,14 @@ export class AddUniversity implements AddUniversityUseCase {
   async add(
     props: AddUniversityUseCaseInput
   ): Promise<AddUniversityUseCaseOutput> {
-    await this.loadUniversityByPropsRepositoryStub.load({
-      name: props.name,
-      stateProvince: props.stateProvince,
-      country: props.country
-    })
+    const savedUniversity = await this.loadUniversityByPropsRepositoryStub.load(
+      {
+        name: props.name,
+        stateProvince: props.stateProvince,
+        country: props.country
+      }
+    )
+    if (savedUniversity) return null
     return null
   }
 }
