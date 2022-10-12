@@ -3,7 +3,7 @@ import { SchemaValidator } from '@/presentation/contracts'
 import { InvalidParamError } from '@/presentation/errors'
 import { MissingParamError } from '@/presentation/errors'
 
-export class ZodSchemaValidation implements SchemaValidator {
+export class ZodSchemaValidator implements SchemaValidator {
   constructor(private readonly schema: z.ZodTypeAny) {}
 
   async validate(input: any): Promise<Error | null> {
