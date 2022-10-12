@@ -8,8 +8,10 @@
     "build": "tsc --build --clean && tsc --build",
     "populate:db": "tsc-alias && node ./dist/main/populate-database.js",
     "test": "jest --passWithNoTests --silent --noStackTrace",
-    "test:unit": "npm test -- -c jest.config.ts --watch",
+    "test:unit": "npm test -- -c jest.config.unit.ts --watch",
+    "test:integration": "npm test -- -c jest.config.integration.ts --watch",
     "test:staged": "npm test -- -c jest.config.ts --findRelatedTests",
+    "test:ci": "npm test -- -c jest.config.ts --coverage",
     "lint-staged": "lint-staged",
     "prepare": "husky install"
   },
