@@ -23,7 +23,7 @@ export class AddUniversity implements AddUniversityUseCase {
       country: props.country
     })
     if (university) return null
-    await this.addUniversityRepository.add({
+    const savedUniversity = await this.addUniversityRepository.add({
       name: props.name,
       stateProvince: props.stateProvince,
       country: props.country,
@@ -31,6 +31,6 @@ export class AddUniversity implements AddUniversityUseCase {
       webPages: props.webPages,
       alphaTwoCode: props.alphaTwoCode
     })
-    return null
+    return savedUniversity
   }
 }
