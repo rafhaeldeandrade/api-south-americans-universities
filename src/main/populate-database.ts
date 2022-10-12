@@ -44,6 +44,7 @@ async function fetchUniversities(country: string): Promise<void> {
 mongooseHelper
   .connect(`${env.mongoUrl}/universities`)
   .then(async () => {
+    await UniversityModel.deleteMany({})
     await populateDatabase()
   })
   .finally(async () => await mongooseHelper.disconnect())
