@@ -21,4 +21,13 @@ describe('LoadUniversityById Controller', () => {
     const { sut } = makeSut()
     expect(sut.handle).toBeDefined()
   })
+
+  it('should return 400 if universityId is not provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      params: {}
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+  })
 })
