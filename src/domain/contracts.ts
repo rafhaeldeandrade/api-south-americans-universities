@@ -12,8 +12,8 @@ export interface University {
 }
 
 export type LoadUniversitiesUseCaseInput = {
-  page: number
-  country: string
+  page?: number
+  country?: string
 }
 
 export type LoadUniversitiesUseCaseOutput = {
