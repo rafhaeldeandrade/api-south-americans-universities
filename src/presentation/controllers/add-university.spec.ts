@@ -1,4 +1,4 @@
-import { AddUniversityController } from '@/presentation/controllers/add-uninversity'
+import { AddUniversityController } from '@/presentation/controllers/add-university'
 import { HttpRequest, SchemaValidator } from '@/presentation/contracts'
 import { faker } from '@faker-js/faker'
 import {
