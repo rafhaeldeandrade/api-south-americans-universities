@@ -1,5 +1,5 @@
 import { LoadUniversitiesUseCase } from '@/domain/contracts'
-import { HttpRequest } from '@/presentation/contracts'
+import { Controller, HttpRequest } from '@/presentation/contracts'
 import { InvalidParamError } from '@/presentation/errors'
 import {
   badRequest,
@@ -7,7 +7,7 @@ import {
   ok
 } from '@/presentation/helpers/http-helper'
 
-export class LoadUniversitiesController {
+export class LoadUniversitiesController implements Controller {
   constructor(
     private readonly loadUniversitiesUseCase: LoadUniversitiesUseCase
   ) {}
