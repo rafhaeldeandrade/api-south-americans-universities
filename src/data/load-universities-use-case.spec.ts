@@ -103,4 +103,19 @@ describe('LoadUniversitiesUseCase', () => {
     const promise = sut.load(props)
     await expect(promise).rejects.toThrow()
   })
+
+  it('should return the correct values on success', async () => {
+    const { sut } = makeSut()
+    const DOCUMENTS_PER_PAGE = 20
+    const props = {
+      country: faker.address.country()
+    } as LoadUniversitiesUseCaseInput
+    const result = await sut.load(props)
+    expect(result).toEqual({
+      totalPages: Math.ceil(
+        CountTotalDocumentsRepositoryStubReturn / DOCUMENTS_PER_PAGE
+      ),
+      universities: LoadUniversitiesRepositoryStubReturn
+    })
+  })
 })
