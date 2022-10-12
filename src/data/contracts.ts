@@ -24,3 +24,12 @@ export interface CountTotalDocumentsRepository {
     props: CountTotalDocumentsRepositoryInput
   ) => Promise<CountTotalDocumentsRepositoryOutput>
 }
+
+export type LoadUniversityByIdRepositoryInput = string
+
+export type LoadUniversityByIdRepositoryOutput = SavedUniversity
+export interface LoadUniversityByIdRepository {
+  load: (
+    id: LoadUniversityByIdRepositoryInput
+  ) => Promise<LoadUniversityByIdRepositoryOutput>
+}
