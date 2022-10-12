@@ -1,17 +1,49 @@
+import {
+  LoadUniversityByIdUseCase,
+  LoadUniversityByIdUseCaseInput,
+  LoadUniversityByIdUseCaseOutput
+} from '@/domain/contracts'
 import { LoadUniversityByIdController } from '@/presentation/controllers/load-university-by-id'
+import { MissingParamError } from '@/presentation/errors'
+import { badRequest } from '@/presentation/helpers/http-helper'
+import { faker } from '@faker-js/faker'
+
+const LoadUniversityByIdUseCaseStubReturn = {
+  id: faker.datatype.uuid(),
+  name: faker.name.fullName(),
+  country: faker.address.country(),
+  stateProvince: faker.address.state(),
+  domains: [faker.internet.domainName()],
+  webPages: [faker.internet.url()],
+  alphaTwoCode: faker.address.countryCode()
+}
+class LoadUniversityByIdUseCaseStub implements LoadUniversityByIdUseCase {
+  async load(
+    props: LoadUniversityByIdUseCaseInput
+  ): Promise<LoadUniversityByIdUseCaseOutput> {
+    return LoadUniversityByIdUseCaseStubReturn
+  }
+}
 
 interface SutTypes {
   sut: LoadUniversityByIdController
+  loadUniversityByIdUseCaseStub: LoadUniversityByIdUseCase
 }
 
 function makeSut(): SutTypes {
-  const sut = new LoadUniversityByIdController()
+  const loadUniversityByIdUseCaseStub = new LoadUniversityByIdUseCaseStub()
+  const sut = new LoadUniversityByIdController(loadUniversityByIdUseCaseStub)
   return {
-    sut
+    sut,
+    loadUniversityByIdUseCaseStub
   }
 }
 
 describe('LoadUniversityById Controller', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('should be defined', () => {
     const { sut } = makeSut()
     expect(sut).toBeDefined()
@@ -28,6 +60,23 @@ describe('LoadUniversityById Controller', () => {
       params: {}
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse).toEqual(
+      badRequest(new MissingParamError('universityId'))
+    )
+  })
+
+  it('should call loadUniversityByIdUseCase with the correct values', async () => {
+    const { sut, loadUniversityByIdUseCaseStub } = makeSut()
+    const loadSpy = jest.spyOn(loadUniversityByIdUseCaseStub, 'load')
+    const httpRequest = {
+      params: {
+        universityId: faker.datatype.uuid()
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(loadSpy).toHaveBeenCalledTimes(1)
+    expect(loadSpy).toHaveBeenCalledWith({
+      universityId: httpRequest.params.universityId
+    })
   })
 })
