@@ -54,4 +54,19 @@ describe('AddUniversity Controller', () => {
     expect(validateSpy).toHaveBeenCalledTimes(1)
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
+
+  it('should return 400 if schemaValidator.validate returns an error', async () => {
+    const { sut, schemaValidationStub } = makeSut()
+    const httpRequest = mockRequest()
+    const error = new Error('teste')
+    jest.spyOn(schemaValidationStub, 'validate').mockResolvedValueOnce(error)
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 400,
+      body: {
+        error: true,
+        [error.name]: error.message
+      }
+    })
+  })
 })
