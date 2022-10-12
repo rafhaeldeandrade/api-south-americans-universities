@@ -1,5 +1,6 @@
 import { Controller, HttpRequest, HttpResponse } from '@/presentation/contracts'
 import {
+  ok,
   badRequest,
   internalServerError
 } from '@/presentation/helpers/http-helper'
@@ -16,10 +17,10 @@ export class LoadUniversityByIdController implements Controller {
       if (!props.params?.universityId) {
         return badRequest(new MissingParamError('universityId'))
       }
-      await this.loadUniversityByIdUseCase.load({
+      const university = await this.loadUniversityByIdUseCase.load({
         universityId: props.params.universityId
       })
-      return null as unknown as HttpResponse
+      return ok(university)
     } catch (e) {
       return internalServerError()
     }
