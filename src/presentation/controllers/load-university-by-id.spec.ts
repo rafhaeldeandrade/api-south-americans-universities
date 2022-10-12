@@ -5,7 +5,10 @@ import {
 } from '@/domain/contracts'
 import { LoadUniversityByIdController } from '@/presentation/controllers/load-university-by-id'
 import { MissingParamError } from '@/presentation/errors'
-import { badRequest } from '@/presentation/helpers/http-helper'
+import {
+  badRequest,
+  internalServerError
+} from '@/presentation/helpers/http-helper'
 import { faker } from '@faker-js/faker'
 
 const LoadUniversityByIdUseCaseStubReturn = {
@@ -78,5 +81,19 @@ describe('LoadUniversityById Controller', () => {
     expect(loadSpy).toHaveBeenCalledWith({
       universityId: httpRequest.params.universityId
     })
+  })
+
+  it('should return 500 if loadUniversityByIdUseCase throws', async () => {
+    const { sut, loadUniversityByIdUseCaseStub } = makeSut()
+    jest
+      .spyOn(loadUniversityByIdUseCaseStub, 'load')
+      .mockRejectedValueOnce(new Error())
+    const httpRequest = {
+      params: {
+        universityId: faker.datatype.uuid()
+      }
+    }
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual(internalServerError())
   })
 })
