@@ -68,4 +68,21 @@ describe('LoadUniversityById use case', () => {
     const promise = sut.load(props)
     await expect(promise).rejects.toThrow()
   })
+
+  it('should return the correct values on success', async () => {
+    const { sut } = makeSut()
+    const props = {
+      universityId: faker.datatype.uuid()
+    }
+    const result = await sut.load(props)
+    expect(result).toEqual({
+      id: LoadUniversityByIdRepositoryStubReturn.id,
+      name: LoadUniversityByIdRepositoryStubReturn.name,
+      country: LoadUniversityByIdRepositoryStubReturn.country,
+      stateProvince: LoadUniversityByIdRepositoryStubReturn.stateProvince,
+      domains: LoadUniversityByIdRepositoryStubReturn.domains,
+      webPages: LoadUniversityByIdRepositoryStubReturn.webPages,
+      alphaTwoCode: LoadUniversityByIdRepositoryStubReturn.alphaTwoCode
+    })
+  })
 })
