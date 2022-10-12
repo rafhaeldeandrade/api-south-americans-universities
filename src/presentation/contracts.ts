@@ -1,3 +1,7 @@
+export interface Controller {
+  handle: (request: HttpRequest) => Promise<HttpResponse>
+}
+
 interface HttpRequestQuery {
   [key: string]: any
 }
