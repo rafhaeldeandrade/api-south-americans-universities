@@ -71,6 +71,18 @@ describe('LoadUniversitiesUseCase', () => {
     })
   })
 
+  it('should throw if countTotalDocumentsRepository throws', async () => {
+    const { sut, countTotalDocumentsRepositoryStub } = makeSut()
+    jest
+      .spyOn(countTotalDocumentsRepositoryStub, 'count')
+      .mockRejectedValueOnce(new Error())
+    const props = {
+      country: faker.address.country()
+    } as LoadUniversitiesUseCaseInput
+    const promise = sut.load(props)
+    await expect(promise).rejects.toThrow()
+  })
+
   it('should call loadUniversitiesRepository with correct values', async () => {
     const { sut, loadUniversitiesRepositoryStub } = makeSut()
     const loadSpy = jest.spyOn(loadUniversitiesRepositoryStub, 'load')
