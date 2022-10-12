@@ -2,12 +2,15 @@ import { AddUniversity } from '@/data/add-university-use-case'
 import { AddUniversityUseCaseInput } from '@/domain/contracts'
 import { faker } from '@faker-js/faker'
 import {
+  AddUniversityRepository,
+  AddUniversityRepositoryInput,
+  AddUniversityRepositoryOutput,
   LoadUniversityByPropsRepository,
   LoadUniversityBypropsRepositoryInput,
   LoadUniversityBypropsRepositoryOutput
 } from '@/data/contracts'
 
-const LoadUniversityByPropsRepositoryStubReturn = {
+const mockUniversity = {
   id: faker.datatype.uuid(),
   name: faker.lorem.words(),
   domains: [faker.internet.domainName()],
@@ -26,16 +29,33 @@ class LoadUniversityByPropsRepositoryStub
   }
 }
 
+class AddUniversityRepositoryStub implements AddUniversityRepository {
+  async add(
+    university: AddUniversityRepositoryInput
+  ): Promise<AddUniversityRepositoryOutput> {
+    return mockUniversity
+  }
+}
+
 interface SutTypes {
   sut: AddUniversity
   loadUniversityByPropsRepositoryStub: LoadUniversityByPropsRepository
+  addUniversityRepositoryStub: AddUniversityRepository
 }
 
 function makeSut(): SutTypes {
   const loadUniversityByPropsRepositoryStub =
     new LoadUniversityByPropsRepositoryStub()
-  const sut = new AddUniversity(loadUniversityByPropsRepositoryStub)
-  return { sut, loadUniversityByPropsRepositoryStub }
+  const addUniversityRepositoryStub = new AddUniversityRepositoryStub()
+  const sut = new AddUniversity(
+    loadUniversityByPropsRepositoryStub,
+    addUniversityRepositoryStub
+  )
+  return {
+    sut,
+    loadUniversityByPropsRepositoryStub,
+    addUniversityRepositoryStub
+  }
 }
 
 function mockProps(): AddUniversityUseCaseInput {
@@ -88,8 +108,24 @@ describe('AddUniversity use case', () => {
     const props = mockProps()
     jest
       .spyOn(loadUniversityByPropsRepositoryStub, 'load')
-      .mockResolvedValueOnce(LoadUniversityByPropsRepositoryStubReturn)
+      .mockResolvedValueOnce(mockUniversity)
     const promise = sut.add(props)
     await expect(promise).resolves.toBeNull()
+  })
+
+  it('should call addUniversityRepository.add with the correct values', async () => {
+    const { sut, addUniversityRepositoryStub } = makeSut()
+    const props = mockProps()
+    const addSpy = jest.spyOn(addUniversityRepositoryStub, 'add')
+    await sut.add(props)
+    expect(addSpy).toHaveBeenCalledTimes(1)
+    expect(addSpy).toHaveBeenCalledWith({
+      name: props.name,
+      domains: props.domains,
+      country: props.country,
+      stateProvince: props.stateProvince,
+      alphaTwoCode: props.alphaTwoCode,
+      webPages: props.webPages
+    })
   })
 })
