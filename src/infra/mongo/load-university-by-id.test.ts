@@ -15,6 +15,11 @@ describe('MongoLoadUniversityById Integration test', () => {
     mongoose.connect(mongoServer.getUri(), { dbName: 'universities-test' })
   })
 
+  afterAll(async () => {
+    await mongoose.disconnect()
+    await mongoServer.stop()
+  })
+
   it('should return the correct document', async () => {
     const documentId = new mongoose.Types.ObjectId().toHexString()
     const fakeUniversity = {

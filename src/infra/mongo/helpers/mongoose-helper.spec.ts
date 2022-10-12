@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
-import { mongooseHelper as sut } from '@/infra/mongo/helpers/mongoose-helper'
 import env from '@/main/config/env'
+import { mongooseHelper as sut } from '@/infra/mongo/helpers/mongoose-helper'
 
 describe('Mongoose Helper', () => {
   afterEach(async () => {
