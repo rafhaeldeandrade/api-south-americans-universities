@@ -1,5 +1,8 @@
 import { Controller, SchemaValidator } from '@/presentation/contracts'
-import { badRequest, internalServerError } from '../helpers/http-helper'
+import {
+  badRequest,
+  internalServerError
+} from '@/presentation/helpers/http-helper'
 
 export class AddUniversityController implements Controller {
   constructor(private readonly schemaValidator: SchemaValidator) {}
