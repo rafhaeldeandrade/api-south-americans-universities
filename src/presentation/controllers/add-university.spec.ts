@@ -145,4 +145,18 @@ describe('AddUniversity Controller', () => {
       }
     })
   })
+
+  it('should return 409 if addUniversityUseCase returns null', async () => {
+    const { sut, addUniversityUseCaseStub } = makeSut()
+    const httpRequest = mockRequest()
+    jest.spyOn(addUniversityUseCaseStub, 'add').mockResolvedValueOnce(null)
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 409,
+      body: {
+        error: true,
+        ResourceAlreadyExistsError: 'University already exists'
+      }
+    })
+  })
 })
