@@ -14,4 +14,9 @@ describe('LoadUniversityById use case', () => {
     const { sut } = makeSut()
     expect(sut).toBeDefined()
   })
+
+  it('should have a method named load', () => {
+    const { sut } = makeSut()
+    expect(sut.load).toBeDefined()
+  })
 })
