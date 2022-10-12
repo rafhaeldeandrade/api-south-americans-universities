@@ -43,3 +43,13 @@ export interface LoadUniversityByIdUseCase {
     props: LoadUniversityByIdUseCaseInput
   ) => Promise<LoadUniversityByIdUseCaseOutput>
 }
+
+export type AddUniversityUseCaseInput = University
+
+export type AddUniversityUseCaseOutput = SavedUniversity | null
+
+export interface AddUniversityUseCase {
+  add: (
+    university: AddUniversityUseCaseInput
+  ) => Promise<AddUniversityUseCaseOutput>
+}
