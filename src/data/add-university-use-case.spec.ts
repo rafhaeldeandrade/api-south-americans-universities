@@ -128,4 +128,14 @@ describe('AddUniversity use case', () => {
       webPages: props.webPages
     })
   })
+
+  it('should throw if addUniversityRepository.add throws', async () => {
+    const { sut, addUniversityRepositoryStub } = makeSut()
+    const props = mockProps()
+    jest
+      .spyOn(addUniversityRepositoryStub, 'add')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.add(props)
+    await expect(promise).rejects.toThrow()
+  })
 })
