@@ -6,8 +6,13 @@ interface HttpRequestQuery {
   [key: string]: any
 }
 
+interface HttpRequestParams {
+  [key: string]: any
+}
+
 export interface HttpRequest {
   query?: HttpRequestQuery
+  params?: HttpRequestParams
 }
 
 interface HttpResponseBody {
