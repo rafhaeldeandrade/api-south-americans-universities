@@ -138,4 +138,11 @@ describe('AddUniversity use case', () => {
     const promise = sut.add(props)
     await expect(promise).rejects.toThrow()
   })
+
+  it('should return the correct values on success', async () => {
+    const { sut } = makeSut()
+    const props = mockProps()
+    const promise = sut.add(props)
+    await expect(promise).resolves.toEqual(mockUniversity)
+  })
 })
