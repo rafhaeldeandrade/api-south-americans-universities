@@ -5,7 +5,8 @@ import {
 } from '@/domain/contracts'
 import {
   CountTotalDocumentsRepository,
-  LoadUniversitiesRepository
+  LoadUniversitiesRepository,
+  LoadUniversitiesRepositoryOutput
 } from '@/data/contracts'
 
 export class LoadUniversities implements LoadUniversitiesUseCase {
@@ -31,7 +32,16 @@ export class LoadUniversities implements LoadUniversitiesUseCase {
     })
     return {
       totalPages: Math.ceil(totalDocuments / DOCUMENTS_PER_PAGE),
-      universities
+      universities: this.mapFromModelUseCaseOutput(universities)
     }
+  }
+
+  mapFromModelUseCaseOutput(universities: LoadUniversitiesRepositoryOutput) {
+    return universities.map(({ id, name, country, stateProvince }) => ({
+      id,
+      name,
+      country,
+      stateProvince
+    }))
   }
 }
