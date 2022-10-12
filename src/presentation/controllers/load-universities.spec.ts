@@ -3,13 +3,15 @@ import { LoadUniversitiesController } from '@/presentation/controllers/load-univ
 import { InvalidParamError } from '@/presentation/errors'
 import {
   badRequest,
-  internalServerError
+  internalServerError,
+  ok
 } from '@/presentation/helpers/http-helper'
 import { LoadUniversitiesUseCase } from '@/domain/contracts'
 
+const LoadUniversitiesUseCaseStubReturn: any[] = []
 class LoadUniversitiesUseCaseStub implements LoadUniversitiesUseCase {
   async load() {
-    return []
+    return LoadUniversitiesUseCaseStubReturn
   }
 }
 
@@ -82,5 +84,19 @@ describe('LoadUniversities Controller', () => {
     }
     const promise = sut.handle(fakeHttpRequest)
     await expect(promise).resolves.toEqual(internalServerError())
+  })
+
+  it('should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const fakeHttpRequest = {
+      query: {
+        page: faker.datatype.number(20),
+        country: faker.address.country()
+      }
+    }
+    const promise = sut.handle(fakeHttpRequest)
+    await expect(promise).resolves.toEqual(
+      ok(LoadUniversitiesUseCaseStubReturn)
+    )
   })
 })
