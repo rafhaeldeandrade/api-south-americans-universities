@@ -17,13 +17,14 @@ export class LoadUniversities implements LoadUniversitiesUseCase {
   async load(
     props: LoadUniversitiesUseCaseInput
   ): Promise<LoadUniversitiesUseCaseOutput> {
-    await this.counTotalDocumentsRepository.count({
+    const DOCUMENTS_PER_PAGE = 20
+    const totalDocuments = await this.counTotalDocumentsRepository.count({
       country: props.country
     })
-    await this.loadUniversitiesRepository.load(props)
+    const universities = await this.loadUniversitiesRepository.load(props)
     return {
-      totalPages: 0,
-      universities: []
+      totalPages: Math.ceil(totalDocuments / DOCUMENTS_PER_PAGE),
+      universities
     }
   }
 }
