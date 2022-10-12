@@ -7,8 +7,10 @@ import {
 } from '@/presentation/contracts'
 import {
   badRequest,
+  conflict,
   internalServerError
 } from '@/presentation/helpers/http-helper'
+import { ResourceAlreadyExistsError } from '../errors'
 
 export class AddUniversityController implements Controller {
   constructor(
@@ -20,7 +22,7 @@ export class AddUniversityController implements Controller {
     try {
       const error = await this.schemaValidator.validate(request.body)
       if (error) return badRequest(error)
-      await this.addUniversityUseCase.add({
+      const savedUniversity = await this.addUniversityUseCase.add({
         name: request?.body?.name,
         domains: request?.body?.domains,
         country: request?.body?.country,
@@ -28,6 +30,10 @@ export class AddUniversityController implements Controller {
         alphaTwoCode: request?.body?.alphaTwoCode,
         webPages: request?.body?.webPages
       })
+      if (!savedUniversity)
+        return conflict(
+          new ResourceAlreadyExistsError('University already exists')
+        )
       return null as unknown as HttpResponse
     } catch (e) {
       return internalServerError()

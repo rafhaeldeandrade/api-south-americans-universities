@@ -1,5 +1,8 @@
 import { HttpResponse } from '@/presentation/contracts'
-import { InvalidParamError } from '@/presentation/errors'
+import {
+  InvalidParamError,
+  ResourceAlreadyExistsError
+} from '@/presentation/errors'
 
 export function badRequest(error: InvalidParamError): HttpResponse {
   return {
@@ -32,5 +35,15 @@ export function resourceNotFound(): HttpResponse {
   return {
     statusCode: 404,
     body: {}
+  }
+}
+
+export function conflict(error: ResourceAlreadyExistsError): HttpResponse {
+  return {
+    statusCode: 409,
+    body: {
+      error: true,
+      [error.name]: error.message
+    }
   }
 }
