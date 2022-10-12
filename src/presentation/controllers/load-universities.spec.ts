@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker'
 import { LoadUniversitiesController } from '@/presentation/controllers/load-universities'
 import { InvalidParamError } from '@/presentation/errors'
-import { badRequest } from '../helpers/http-helper'
+import {
+  badRequest,
+  internalServerError
+} from '@/presentation/helpers/http-helper'
 import { LoadUniversitiesUseCase } from '@/domain/contracts'
 
 class LoadUniversitiesUseCaseStub implements LoadUniversitiesUseCase {
@@ -64,5 +67,20 @@ describe('LoadUniversities Controller', () => {
       page: fakeHttpRequest.query.page,
       country: fakeHttpRequest.query.country
     })
+  })
+
+  it('should return 500 if loadUniversitiesUseCase throws', async () => {
+    const { sut, loadUniversitiesUseCaseStub } = makeSut()
+    jest
+      .spyOn(loadUniversitiesUseCaseStub, 'load')
+      .mockRejectedValueOnce(new Error())
+    const fakeHttpRequest = {
+      query: {
+        page: faker.datatype.number(20),
+        country: faker.address.country()
+      }
+    }
+    const promise = sut.handle(fakeHttpRequest)
+    await expect(promise).resolves.toEqual(internalServerError())
   })
 })
