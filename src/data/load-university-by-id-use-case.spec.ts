@@ -56,4 +56,16 @@ describe('LoadUniversityById use case', () => {
     expect(loadSpy).toHaveBeenCalledTimes(1)
     expect(loadSpy).toHaveBeenCalledWith(props.universityId)
   })
+
+  it('should throw if loadUniversityByIdRepository throws', async () => {
+    const { sut, loadUniversityByIdRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadUniversityByIdRepositoryStub, 'load')
+      .mockRejectedValueOnce(new Error())
+    const props = {
+      universityId: faker.datatype.uuid()
+    }
+    const promise = sut.load(props)
+    await expect(promise).rejects.toThrow()
+  })
 })
