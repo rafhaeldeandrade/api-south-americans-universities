@@ -1,6 +1,11 @@
 import { AddUniversityController } from '@/presentation/controllers/add-uninversity'
 import { HttpRequest, SchemaValidator } from '@/presentation/contracts'
 import { faker } from '@faker-js/faker'
+import {
+  AddUniversityUseCase,
+  AddUniversityUseCaseInput,
+  AddUniversityUseCaseOutput
+} from '@/domain/contracts'
 
 class SchemaValidationStub implements SchemaValidator {
   async validate(input: any): Promise<Error | null> {
@@ -8,17 +13,40 @@ class SchemaValidationStub implements SchemaValidator {
   }
 }
 
+const AddUniversityUseCaseStubReturn = {
+  id: faker.datatype.uuid(),
+  name: faker.lorem.words(),
+  domains: [faker.internet.domainName()],
+  country: faker.address.country(),
+  stateProvince: faker.address.state(),
+  alphaTwoCode: faker.address.countryCode(),
+  webPages: [faker.internet.url()]
+}
+class AddUniversityUseCaseStub implements AddUniversityUseCase {
+  async add(
+    university: AddUniversityUseCaseInput
+  ): Promise<AddUniversityUseCaseOutput> {
+    return AddUniversityUseCaseStubReturn
+  }
+}
+
 interface SutTypes {
   sut: AddUniversityController
   schemaValidationStub: SchemaValidator
+  addUniversityUseCaseStub: AddUniversityUseCase
 }
 
 function makeSut(): SutTypes {
   const schemaValidationStub = new SchemaValidationStub()
-  const sut = new AddUniversityController(schemaValidationStub)
+  const addUniversityUseCaseStub = new AddUniversityUseCaseStub()
+  const sut = new AddUniversityController(
+    schemaValidationStub,
+    addUniversityUseCaseStub
+  )
   return {
     sut,
-    schemaValidationStub
+    schemaValidationStub,
+    addUniversityUseCaseStub
   }
 }
 
@@ -83,6 +111,22 @@ describe('AddUniversity Controller', () => {
         error: true,
         InternalServerError: 'Something went wrong, try again later'
       }
+    })
+  })
+
+  it('should call addUniversityUseCase.add with the correct values', async () => {
+    const { sut, addUniversityUseCaseStub } = makeSut()
+    const addSpy = jest.spyOn(addUniversityUseCaseStub, 'add')
+    const httpRequest = mockRequest()
+    await sut.handle(httpRequest)
+    expect(addSpy).toHaveBeenCalledTimes(1)
+    expect(addSpy).toHaveBeenCalledWith({
+      name: httpRequest?.body?.name,
+      domains: httpRequest?.body?.domains,
+      country: httpRequest?.body?.country,
+      stateProvince: httpRequest?.body?.stateProvince,
+      alphaTwoCode: httpRequest?.body?.alphaTwoCode,
+      webPages: httpRequest?.body?.webPages
     })
   })
 })
