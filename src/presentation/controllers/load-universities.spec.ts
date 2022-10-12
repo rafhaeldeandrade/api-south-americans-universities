@@ -6,9 +6,15 @@ import {
   internalServerError,
   ok
 } from '@/presentation/helpers/http-helper'
-import { LoadUniversitiesUseCase } from '@/domain/contracts'
+import {
+  LoadUniversitiesUseCase,
+  LoadUniversitiesUseCaseOutput
+} from '@/domain/contracts'
 
-const LoadUniversitiesUseCaseStubReturn: any[] = []
+const LoadUniversitiesUseCaseStubReturn: LoadUniversitiesUseCaseOutput = {
+  totalPages: 0,
+  universities: []
+}
 class LoadUniversitiesUseCaseStub implements LoadUniversitiesUseCase {
   async load() {
     return LoadUniversitiesUseCaseStubReturn

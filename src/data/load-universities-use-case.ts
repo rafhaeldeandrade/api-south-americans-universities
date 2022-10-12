@@ -12,8 +12,11 @@ export class LoadUniversities implements LoadUniversitiesUseCase {
 
   async load(
     props: LoadUniversitiesUseCaseInput
-  ): Promise<LoadUniversitiesUseCaseOutput[]> {
+  ): Promise<LoadUniversitiesUseCaseOutput> {
     await this.loadUniversitiesRepository.load(props)
-    return []
+    return {
+      totalPages: 0,
+      universities: []
+    }
   }
 }

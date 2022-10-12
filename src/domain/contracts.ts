@@ -17,14 +17,17 @@ export type LoadUniversitiesUseCaseInput = {
 }
 
 export type LoadUniversitiesUseCaseOutput = {
-  id: string
-  name: string
-  country: string
-  stateProvince: string | null
+  totalPages: number
+  universities: {
+    id: string
+    name: string
+    country: string
+    stateProvince: string | null
+  }[]
 }
 
 export interface LoadUniversitiesUseCase {
   load: (
     props: LoadUniversitiesUseCaseInput
-  ) => Promise<LoadUniversitiesUseCaseOutput[]>
+  ) => Promise<LoadUniversitiesUseCaseOutput>
 }
