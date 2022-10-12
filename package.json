@@ -5,6 +5,8 @@
   "author": "Rafhael Gomes <rafhael@protonmail.com>",
   "license": "MIT",
   "scripts": {
+    "build": "tsc --build --clean && tsc --build",
+    "populate:db": "tsc-alias && node ./dist/main/populate-database.js",
     "test": "jest --passWithNoTests --silent --noStackTrace",
     "test:unit": "npm test -- -c jest.config.ts --watch",
     "test:staged": "npm test -- -c jest.config.ts --findRelatedTests",
