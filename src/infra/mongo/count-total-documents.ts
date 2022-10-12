@@ -10,7 +10,9 @@ export class MongoCountTotalDocuments implements CountTotalDocumentsRepository {
   async count(
     props: CountTotalDocumentsRepositoryInput
   ): Promise<CountTotalDocumentsRepositoryOutput> {
-    const documents = await this.model.countDocuments(props)
+    const filter = {} as any
+    if (props.country) filter.country = props.country
+    const documents = await this.model.countDocuments(filter)
     return documents
   }
 }
