@@ -27,3 +27,10 @@ export function ok(data: any): HttpResponse {
     body: data
   }
 }
+
+export function resourceNotFound(): HttpResponse {
+  return {
+    statusCode: 404,
+    body: {}
+  }
+}

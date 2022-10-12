@@ -4,11 +4,6 @@ import {
   LoadUniversityByIdUseCaseOutput
 } from '@/domain/contracts'
 import { LoadUniversityByIdController } from '@/presentation/controllers/load-university-by-id'
-import { MissingParamError } from '@/presentation/errors'
-import {
-  badRequest,
-  internalServerError
-} from '@/presentation/helpers/http-helper'
 import { faker } from '@faker-js/faker'
 
 const LoadUniversityByIdUseCaseStubReturn = {
@@ -118,6 +113,23 @@ describe('LoadUniversityById Controller', () => {
     expect(httpResponse).toEqual({
       statusCode: 200,
       body: LoadUniversityByIdUseCaseStubReturn
+    })
+  })
+
+  it('should return 404 with the correct value if university was not found', async () => {
+    const { sut, loadUniversityByIdUseCaseStub } = makeSut()
+    jest
+      .spyOn(loadUniversityByIdUseCaseStub, 'load')
+      .mockResolvedValueOnce(null)
+    const httpRequest = {
+      params: {
+        universityId: faker.datatype.uuid()
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual({
+      statusCode: 404,
+      body: {}
     })
   })
 })
