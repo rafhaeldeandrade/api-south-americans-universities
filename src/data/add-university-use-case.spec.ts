@@ -14,4 +14,9 @@ describe('AddUniversity use case', () => {
     const { sut } = makeSut()
     expect(sut).toBeDefined()
   })
+
+  it('should have a method named add', async () => {
+    const { sut } = makeSut()
+    expect(sut.add).toBeDefined()
+  })
 })
