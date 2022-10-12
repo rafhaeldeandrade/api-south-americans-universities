@@ -89,7 +89,11 @@ describe('LoadUniversitiesUseCase', () => {
     const props = {} as LoadUniversitiesUseCaseInput
     await sut.load(props)
     expect(loadSpy).toHaveBeenCalledTimes(1)
-    expect(loadSpy).toHaveBeenCalledWith(props)
+    expect(loadSpy).toHaveBeenCalledWith({
+      country: props.country,
+      skip: 0,
+      limit: 20
+    })
   })
 
   it('should throw if loadUniversitiesRepository throws', async () => {

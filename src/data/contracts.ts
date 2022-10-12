@@ -1,7 +1,8 @@
 import { SavedUniversity } from '@/domain/contracts'
 
 export type LoadUniversitiesRepositoryInput = {
-  page?: number
+  skip: number
+  limit: number
   country?: string
 }
 
