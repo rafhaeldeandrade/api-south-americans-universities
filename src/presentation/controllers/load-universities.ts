@@ -1,1 +1,5 @@
-export class LoadUniversitiesController {}
+export class LoadUniversitiesController {
+  handle() {
+    return null
+  }
+}
