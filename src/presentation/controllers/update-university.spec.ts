@@ -22,7 +22,7 @@ function makeSut(): SutTypes {
   }
 }
 
-function mockHttpRequest() {
+function mockRequest() {
   return {
     params: {
       universityId: faker.datatype.uuid()
@@ -49,7 +49,7 @@ describe('UpdateUniversityController', () => {
   it('should call schemaValidator.validate with the correct values', () => {
     const { sut, schemaValidatorStub } = makeSut()
     const validateSpy = jest.spyOn(schemaValidatorStub, 'validate')
-    const httpRequest = mockHttpRequest()
+    const httpRequest = mockRequest()
     sut.handle(httpRequest)
     expect(validateSpy).toHaveBeenCalledTimes(1)
     expect(validateSpy).toHaveBeenCalledWith({
@@ -57,6 +57,21 @@ describe('UpdateUniversityController', () => {
       name: httpRequest.body.name,
       domains: httpRequest.body.domains,
       universityId: httpRequest.params.universityId
+    })
+  })
+
+  it('should return 400 if schemaValidator.validate returns an error', async () => {
+    const { sut, schemaValidatorStub } = makeSut()
+    const httpRequest = mockRequest()
+    const error = new Error('teste')
+    jest.spyOn(schemaValidatorStub, 'validate').mockResolvedValueOnce(error)
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 400,
+      body: {
+        error: true,
+        [error.name]: error.message
+      }
     })
   })
 })
