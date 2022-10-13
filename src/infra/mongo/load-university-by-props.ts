@@ -13,11 +13,12 @@ export class MongoLoadUniversityByProps
   ): Promise<LoadUniversityBypropsRepositoryOutput> {
     const filters = {} as any
     const { name, stateProvince, country } = props
-    if (name) filters.name = name
-    if (stateProvince || stateProvince === null) {
-      filters.stateProvince = stateProvince
+    if (name) filters.name = { $regex: new RegExp(name, 'i') }
+    if (stateProvince) {
+      filters.stateProvince = { $regex: new RegExp(stateProvince, 'i') }
     }
-    if (country) filters.country = props.country
+    if (stateProvince === null) filters.stateProvince = stateProvince
+    if (country) filters.country = { $regex: new RegExp(country, 'i') }
     const university = await UniversityModel.findOne(
       filters,
       {},

@@ -11,7 +11,7 @@ export class MongoLoadUniversities implements LoadUniversitiesRepository {
   ): Promise<LoadUniversitiesRepositoryOutput> {
     const { country, skip, limit } = props
     const filters = {} as any
-    if (country) filters['country'] = country
+    if (country) filters.country = { $regex: new RegExp(country, 'i') }
     const universities = await UniversityModel.find(
       filters,
       {},
