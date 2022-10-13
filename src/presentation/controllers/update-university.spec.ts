@@ -1,6 +1,11 @@
 import { UpdateUniversityController } from '@/presentation/controllers/update-university'
 import { faker } from '@faker-js/faker'
 import { SchemaValidator } from '@/presentation/contracts'
+import {
+  UpdateUniversityUseCase,
+  UpdateUniversityUseCaseInput,
+  UpdateUniversityUseCaseOutput
+} from '@/domain/contracts'
 
 class SchemaValidatorStub implements SchemaValidator {
   async validate(input: any): Promise<Error | null> {
@@ -8,17 +13,40 @@ class SchemaValidatorStub implements SchemaValidator {
   }
 }
 
+const updateUniversityUseCaseStubReturn = {
+  id: faker.datatype.uuid(),
+  name: faker.lorem.words(),
+  domains: [faker.internet.domainName()],
+  country: faker.address.country(),
+  stateProvince: faker.address.state(),
+  alphaTwoCode: faker.address.countryCode(),
+  webPages: [faker.internet.url()]
+}
+class UpdateUniversityUseCaseStub implements UpdateUniversityUseCase {
+  async update(
+    props: UpdateUniversityUseCaseInput
+  ): Promise<UpdateUniversityUseCaseOutput> {
+    return updateUniversityUseCaseStubReturn
+  }
+}
+
 interface SutTypes {
   sut: UpdateUniversityController
   schemaValidatorStub: SchemaValidator
+  updateUniversityUseCaseStub: UpdateUniversityUseCase
 }
 
 function makeSut(): SutTypes {
   const schemaValidatorStub = new SchemaValidatorStub()
-  const sut = new UpdateUniversityController(schemaValidatorStub)
+  const updateUniversityUseCaseStub = new UpdateUniversityUseCaseStub()
+  const sut = new UpdateUniversityController(
+    schemaValidatorStub,
+    updateUniversityUseCaseStub
+  )
   return {
     sut,
-    schemaValidatorStub
+    schemaValidatorStub,
+    updateUniversityUseCaseStub
   }
 }
 
@@ -88,6 +116,20 @@ describe('UpdateUniversityController', () => {
         error: true,
         InternalServerError: 'Something went wrong, try again later'
       }
+    })
+  })
+
+  it('should call updateUniversityUseCase.update with the correct values', async () => {
+    const { sut, updateUniversityUseCaseStub } = makeSut()
+    const addSpy = jest.spyOn(updateUniversityUseCaseStub, 'update')
+    const httpRequest = mockRequest()
+    await sut.handle(httpRequest)
+    expect(addSpy).toHaveBeenCalledTimes(1)
+    expect(addSpy).toHaveBeenCalledWith({
+      universityId: httpRequest.params.universityId,
+      name: httpRequest.body.name,
+      domains: httpRequest.body.domains,
+      webPages: httpRequest.body.webPages
     })
   })
 })
