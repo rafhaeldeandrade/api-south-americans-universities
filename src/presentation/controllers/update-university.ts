@@ -7,7 +7,8 @@ import {
 } from '@/presentation/contracts'
 import {
   badRequest,
-  internalServerError
+  internalServerError,
+  resourceNotFound
 } from '@/presentation/helpers/http-helper'
 
 export class UpdateUniversityController implements Controller {
@@ -25,12 +26,13 @@ export class UpdateUniversityController implements Controller {
         universityId: request?.params?.universityId
       })
       if (error) return badRequest(error)
-      await this.updateUniversityUseCase.update({
+      const university = await this.updateUniversityUseCase.update({
         webPages: request?.body?.webPages,
         name: request?.body?.name,
         domains: request?.body?.domains,
         universityId: request?.params?.universityId
       })
+      if (!university) return resourceNotFound()
       return null as unknown as HttpResponse
     } catch (e) {
       return internalServerError()
