@@ -4,7 +4,7 @@ import { LoadUniversityById } from '@/data/load-university-by-id-use-case'
 import { LoadUniversityByIdController } from '@/presentation/controllers/load-university-by-id'
 
 export function makeLoadUniversityByIdController(): Controller {
-  const loadUniversityById = new MongoLoadUniversityById()
-  const useCase = new LoadUniversityById(loadUniversityById)
+  const loadUniversityByIdRepository = new MongoLoadUniversityById()
+  const useCase = new LoadUniversityById(loadUniversityByIdRepository)
   return new LoadUniversityByIdController(useCase)
 }

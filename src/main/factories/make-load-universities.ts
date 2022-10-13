@@ -6,8 +6,13 @@ import { LoadUniversitiesController } from '@/presentation/controllers/load-univ
 import { LoadUniversities } from '@/data/load-universities-use-case'
 
 export function makeLoadUniversitiesController(): Controller {
-  const countTotalDocuments = new MongoCountTotalDocuments(UniversityModel)
-  const loadUniversities = new MongoLoadUniversities()
-  const useCase = new LoadUniversities(countTotalDocuments, loadUniversities)
+  const countTotalDocumentsRepository = new MongoCountTotalDocuments(
+    UniversityModel
+  )
+  const loadUniversitiesRepository = new MongoLoadUniversities()
+  const useCase = new LoadUniversities(
+    countTotalDocumentsRepository,
+    loadUniversitiesRepository
+  )
   return new LoadUniversitiesController(useCase)
 }

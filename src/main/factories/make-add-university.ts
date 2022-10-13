@@ -17,8 +17,11 @@ export function makeAddUniversityController(): Controller {
     alphaTwoCode: z.string().min(2).max(2)
   })
   const zodSchemaValidator = new ZodSchemaValidator(zodSchema)
-  const loadUniversityByProps = new MongoLoadUniversityByProps()
-  const addUniversity = new MongoAddUniversity()
-  const useCase = new AddUniversity(loadUniversityByProps, addUniversity)
+  const loadUniversityByPropsRepository = new MongoLoadUniversityByProps()
+  const addUniversityRepository = new MongoAddUniversity()
+  const useCase = new AddUniversity(
+    loadUniversityByPropsRepository,
+    addUniversityRepository
+  )
   return new AddUniversityController(zodSchemaValidator, useCase)
 }
