@@ -118,4 +118,14 @@ describe('UpdateUniversity use case', () => {
       webPages: props.webPages
     })
   })
+
+  it('should throw if updateUniversityRepository.update throws', async () => {
+    const { sut, updateUniversityRepositoryStub } = makeSut()
+    const props = mockProps()
+    jest
+      .spyOn(updateUniversityRepositoryStub, 'update')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.update(props)
+    await expect(promise).rejects.toThrow()
+  })
 })
