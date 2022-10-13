@@ -13,7 +13,10 @@ export class DeleteUniversity implements DeleteUniversityUseCase {
   async delete(
     universityId: DeleteUniversityUseCaseInput
   ): Promise<DeleteUniversityUseCaseOutput> {
-    await this.deleteUniversityRepository.delete(universityId)
-    return null as unknown as DeleteUniversityUseCaseOutput
+    const deleted = await this.deleteUniversityRepository.delete(universityId)
+    if (!deleted) return null
+    return {
+      id: universityId
+    }
   }
 }

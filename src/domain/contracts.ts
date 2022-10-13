@@ -72,7 +72,7 @@ export type DeleteUniversityUseCaseInput = string
 
 export type DeleteUniversityUseCaseOutput = {
   id: string
-}
+} | null
 
 export interface DeleteUniversityUseCase {
   delete: (
