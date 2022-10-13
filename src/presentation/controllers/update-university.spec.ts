@@ -145,4 +145,14 @@ describe('UpdateUniversityController', () => {
       body: {}
     })
   })
+
+  it('should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const httpRequest = mockRequest()
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 200,
+      body: updateUniversityUseCaseStubReturn
+    })
+  })
 })
