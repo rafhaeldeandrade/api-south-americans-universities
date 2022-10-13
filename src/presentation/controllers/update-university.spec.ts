@@ -16,4 +16,9 @@ describe('UpdateUniversityController', () => {
     const { sut } = makeSut()
     expect(sut).toBeDefined()
   })
+
+  it('should have a method named handle', () => {
+    const { sut } = makeSut()
+    expect(sut.handle).toBeDefined()
+  })
 })
