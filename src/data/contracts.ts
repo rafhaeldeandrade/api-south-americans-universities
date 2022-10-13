@@ -75,7 +75,7 @@ export interface UpdateUniversityRepository {
 
 export type DeleteUniversityRepositoryInput = string
 
-export type DeleteUniversityRepositoryOutput = void
+export type DeleteUniversityRepositoryOutput = void | null
 
 export interface DeleteUniversityRepository {
   delete: (

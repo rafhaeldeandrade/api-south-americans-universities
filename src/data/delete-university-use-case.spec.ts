@@ -51,4 +51,14 @@ describe('UpdateUniversity use case', () => {
     expect(deleteSpy).toHaveBeenCalledTimes(1)
     expect(deleteSpy).toHaveBeenCalledWith(props)
   })
+
+  it('should return null if deleteUniversityRepository.delete return null', async () => {
+    const { sut, deleteUniversityRepositoryStub } = makeSut()
+    const props = mockProps()
+    jest
+      .spyOn(deleteUniversityRepositoryStub, 'delete')
+      .mockResolvedValueOnce(null)
+    const promise = sut.delete(props)
+    await expect(promise).resolves.toBeNull()
+  })
 })
