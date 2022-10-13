@@ -42,8 +42,8 @@ describe('MongoLoadTotalDocuments Integration Test', () => {
   })
 
   it('should return the correct total documents when country prop is provided', async () => {
-    const TOTAL_DOCUMENTS_WITH_BRAZIL_AS_COUNTRY = faker.datatype.number(200)
-    const TOTAL_DOCUMENTS_WITH_OTHER_COUNTRIES = faker.datatype.number(200)
+    const TOTAL_DOCUMENTS_WITH_BRAZIL_AS_COUNTRY = faker.datatype.number(50)
+    const TOTAL_DOCUMENTS_WITH_OTHER_COUNTRIES = faker.datatype.number(50)
     const fakeBrazilianUniversities = Array.from({
       length: TOTAL_DOCUMENTS_WITH_BRAZIL_AS_COUNTRY
     }).map(() => ({
