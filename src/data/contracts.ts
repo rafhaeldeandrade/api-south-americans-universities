@@ -57,3 +57,18 @@ export interface AddUniversityRepository {
     props: AddUniversityRepositoryInput
   ) => Promise<AddUniversityRepositoryOutput>
 }
+
+export type UpdateUniversityRepositoryInput = {
+  id: string
+  name: string
+  domains: string[]
+  webPages: string[]
+}
+
+export type UpdateUniversityRepositoryOutput = SavedUniversity | null
+
+export interface UpdateUniversityRepository {
+  update: (
+    props: UpdateUniversityRepositoryInput
+  ) => Promise<UpdateUniversityRepositoryOutput>
+}
