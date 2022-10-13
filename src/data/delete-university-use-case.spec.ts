@@ -10,7 +10,7 @@ class DeleteUniversityRepositoryStub implements DeleteUniversityRepository {
   async delete(
     props: DeleteUniversityRepositoryInput
   ): Promise<DeleteUniversityRepositoryOutput> {
-    return Promise.resolve()
+    return true
   }
 }
 
@@ -60,5 +60,14 @@ describe('UpdateUniversity use case', () => {
       .mockResolvedValueOnce(null)
     const promise = sut.delete(props)
     await expect(promise).resolves.toBeNull()
+  })
+
+  it('should return the correct values on success', async () => {
+    const { sut } = makeSut()
+    const props = mockProps()
+    const promise = sut.delete(props)
+    await expect(promise).resolves.toEqual({
+      id: props
+    })
   })
 })
