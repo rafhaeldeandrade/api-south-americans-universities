@@ -12,14 +12,14 @@ export class LoadUniversitiesController implements Controller {
     private readonly loadUniversitiesUseCase: LoadUniversitiesUseCase
   ) {}
 
-  async handle(httpRequest: HttpRequest) {
+  async handle(request: HttpRequest) {
     try {
-      if (httpRequest?.query?.page && isNaN(httpRequest.query.page)) {
+      if (request?.query?.page && isNaN(request.query.page)) {
         return badRequest(new InvalidParamError('Page must be a number'))
       }
       const universities = await this.loadUniversitiesUseCase.load({
-        page: httpRequest?.query?.page,
-        country: httpRequest?.query?.country
+        page: request?.query?.page,
+        country: request?.query?.country
       })
       return ok(universities)
     } catch (e) {
