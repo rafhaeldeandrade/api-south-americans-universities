@@ -130,6 +130,19 @@ describe('AddUniversity Controller', () => {
     })
   })
 
+  it('should return 404 if deleteUniversityUseCase.delete returns null', async () => {
+    const { sut, deleteUniversityUseCaseStub } = makeSut()
+    const request = mockRequest()
+    jest
+      .spyOn(deleteUniversityUseCaseStub, 'delete')
+      .mockResolvedValueOnce(null)
+    const promise = sut.handle(request)
+    await expect(promise).resolves.toEqual({
+      statusCode: 404,
+      body: {}
+    })
+  })
+
   it('should return 200 on success', async () => {
     const { sut } = makeSut()
     const request = mockRequest()
