@@ -6,6 +6,7 @@ import {
   SchemaValidator
 } from '@/presentation/contracts'
 import {
+  ok,
   badRequest,
   internalServerError,
   resourceNotFound
@@ -33,7 +34,7 @@ export class UpdateUniversityController implements Controller {
         universityId: request?.params?.universityId
       })
       if (!university) return resourceNotFound()
-      return null as unknown as HttpResponse
+      return ok(university)
     } catch (e) {
       return internalServerError()
     }
