@@ -113,4 +113,20 @@ describe('AddUniversity Controller', () => {
     expect(addSpy).toHaveBeenCalledTimes(1)
     expect(addSpy).toHaveBeenCalledWith(request.params.universityId)
   })
+
+  it('should return 500 if deleteUniversityUseCase.delete throws an error', async () => {
+    const { sut, deleteUniversityUseCaseStub } = makeSut()
+    const httpRequest = mockRequest()
+    jest
+      .spyOn(deleteUniversityUseCaseStub, 'delete')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 500,
+      body: {
+        error: true,
+        InternalServerError: 'Something went wrong, try again later'
+      }
+    })
+  })
 })
