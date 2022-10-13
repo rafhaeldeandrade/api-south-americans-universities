@@ -16,4 +16,9 @@ describe('UpdateUniversity use case', () => {
     const { sut } = makeSut()
     expect(sut).toBeDefined()
   })
+
+  it('should have a method named update', async () => {
+    const { sut } = makeSut()
+    expect(sut.update).toBeDefined()
+  })
 })
