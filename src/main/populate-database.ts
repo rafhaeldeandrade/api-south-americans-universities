@@ -19,10 +19,10 @@ function mapToModel(universities: any[]): University[] {
 async function populateDatabase() {
   const countries = [
     'argentina',
-    'brasil',
+    'brazil',
     'chile',
     'colombia',
-    'paraguai',
+    'paraguay',
     'peru',
     'suriname',
     'uruguay'
