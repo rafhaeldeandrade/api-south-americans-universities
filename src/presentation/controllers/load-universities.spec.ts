@@ -10,6 +10,13 @@ import {
   LoadUniversitiesUseCase,
   LoadUniversitiesUseCaseOutput
 } from '@/domain/contracts'
+import { SchemaValidator } from '../contracts'
+
+class SchemaValidatorStub implements SchemaValidator {
+  async validate(input: any): Promise<Error | null> {
+    return null
+  }
+}
 
 const LoadUniversitiesUseCaseStubReturn: LoadUniversitiesUseCaseOutput = {
   totalPages: 0,
@@ -23,13 +30,27 @@ class LoadUniversitiesUseCaseStub implements LoadUniversitiesUseCase {
 
 interface SutTypes {
   sut: LoadUniversitiesController
+  schemaValidatorStub: SchemaValidator
   loadUniversitiesUseCaseStub: LoadUniversitiesUseCase
 }
 
 function makeSut(): SutTypes {
+  const schemaValidatorStub = new SchemaValidatorStub()
   const loadUniversitiesUseCaseStub = new LoadUniversitiesUseCaseStub()
-  const sut = new LoadUniversitiesController(loadUniversitiesUseCaseStub)
-  return { sut, loadUniversitiesUseCaseStub }
+  const sut = new LoadUniversitiesController(
+    schemaValidatorStub,
+    loadUniversitiesUseCaseStub
+  )
+  return { sut, schemaValidatorStub, loadUniversitiesUseCaseStub }
+}
+
+function mockRequest() {
+  return {
+    query: {
+      page: faker.datatype.number(),
+      country: faker.address.country()
+    }
+  }
 }
 
 describe('LoadUniversities Controller', () => {
@@ -47,17 +68,46 @@ describe('LoadUniversities Controller', () => {
     expect(sut.handle).toBeDefined()
   })
 
-  it('should return 400 if query.page is provided but it is not a number', async () => {
-    const { sut } = makeSut()
-    const fakeHttpRequest = {
-      query: {
-        page: faker.random.word()
+  it('should call schemaValidator.validate with correct values', async () => {
+    const { sut, schemaValidatorStub } = makeSut()
+    const validateSpy = jest.spyOn(schemaValidatorStub, 'validate')
+    const request = mockRequest()
+    await sut.handle(request)
+    expect(validateSpy).toHaveBeenCalledWith({
+      page: request?.query?.page,
+      country: request?.query?.country
+    })
+  })
+
+  it('should return 400 if schemaValidator.validate returns an error', async () => {
+    const { sut, schemaValidatorStub } = makeSut()
+    const error = new Error()
+    jest.spyOn(schemaValidatorStub, 'validate').mockResolvedValueOnce(error)
+    const request = mockRequest()
+    const promise = sut.handle(request)
+    expect(promise).resolves.toEqual({
+      statusCode: 400,
+      body: {
+        error: true,
+        [error.name]: error.message
       }
-    }
-    const response = await sut.handle(fakeHttpRequest)
-    expect(response).toEqual(
-      badRequest(new InvalidParamError('Page must be a number'))
-    )
+    })
+  })
+
+  it('should return 500 if schemaValidator.validate throws an error', async () => {
+    const { sut, schemaValidatorStub } = makeSut()
+    const httpRequest = mockRequest()
+    jest
+      .spyOn(schemaValidatorStub, 'validate')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.handle(httpRequest)
+    await expect(promise).resolves.toEqual({
+      statusCode: 500,
+      body: {
+        error: true,
+        InternalServerError: 'Something went wrong, try again later'
+      }
+    })
   })
 
   it('should call loadUniversitiesUseCase with correct values', async () => {

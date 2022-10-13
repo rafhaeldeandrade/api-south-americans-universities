@@ -1,6 +1,9 @@
 import { LoadUniversitiesUseCase } from '@/domain/contracts'
-import { Controller, HttpRequest } from '@/presentation/contracts'
-import { InvalidParamError } from '@/presentation/errors'
+import {
+  Controller,
+  HttpRequest,
+  SchemaValidator
+} from '@/presentation/contracts'
 import {
   badRequest,
   internalServerError,
@@ -9,14 +12,17 @@ import {
 
 export class LoadUniversitiesController implements Controller {
   constructor(
+    private readonly schemaValidator: SchemaValidator,
     private readonly loadUniversitiesUseCase: LoadUniversitiesUseCase
   ) {}
 
   async handle(request: HttpRequest) {
     try {
-      if (request?.query?.page && isNaN(request.query.page)) {
-        return badRequest(new InvalidParamError('Page must be a number'))
-      }
+      const error = await this.schemaValidator.validate({
+        page: request?.query?.page,
+        country: request?.query?.country
+      })
+      if (error) return badRequest(error)
       const universities = await this.loadUniversitiesUseCase.load({
         page: request?.query?.page,
         country: request?.query?.country
