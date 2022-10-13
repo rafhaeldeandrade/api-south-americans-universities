@@ -53,3 +53,17 @@ export interface AddUniversityUseCase {
     university: AddUniversityUseCaseInput
   ) => Promise<AddUniversityUseCaseOutput>
 }
+
+export type UpdateUniversityUseCaseInput = {
+  universityId: string
+  name: string
+  domains: string[]
+  webPages: string[]
+}
+
+export type UpdateUniversityUseCaseOutput = SavedUniversity | null
+export interface UpdateUniversityUseCase {
+  update: (
+    props: UpdateUniversityUseCaseInput
+  ) => Promise<UpdateUniversityUseCaseOutput>
+}
