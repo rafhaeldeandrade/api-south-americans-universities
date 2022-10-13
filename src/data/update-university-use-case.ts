@@ -22,12 +22,12 @@ export class UpdateUniversity implements UpdateUniversityUseCase {
       universityId
     )
     if (!university) return null
-    await this.updateUniversityRepository.update({
+    const updatedUniversity = await this.updateUniversityRepository.update({
       id: universityId,
       name,
       webPages,
       domains
     })
-    return null
+    return updatedUniversity
   }
 }
