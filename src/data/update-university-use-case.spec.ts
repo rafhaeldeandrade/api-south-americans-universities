@@ -67,4 +67,14 @@ describe('UpdateUniversity use case', () => {
     expect(loadSpy).toHaveBeenCalledTimes(1)
     expect(loadSpy).toHaveBeenCalledWith(props.universityId)
   })
+
+  it('should throw if loadUniversityByIdRepository.load throws', async () => {
+    const { sut, loadUniversityByIdRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadUniversityByIdRepositoryStub, 'load')
+      .mockRejectedValueOnce(new Error())
+    const props = mockProps()
+    const promise = sut.update(props)
+    await expect(promise).rejects.toThrow()
+  })
 })
