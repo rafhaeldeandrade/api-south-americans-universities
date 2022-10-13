@@ -116,17 +116,27 @@ describe('AddUniversity Controller', () => {
 
   it('should return 500 if deleteUniversityUseCase.delete throws an error', async () => {
     const { sut, deleteUniversityUseCaseStub } = makeSut()
-    const httpRequest = mockRequest()
+    const request = mockRequest()
     jest
       .spyOn(deleteUniversityUseCaseStub, 'delete')
       .mockRejectedValueOnce(new Error())
-    const promise = sut.handle(httpRequest)
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual({
       statusCode: 500,
       body: {
         error: true,
         InternalServerError: 'Something went wrong, try again later'
       }
+    })
+  })
+
+  it('should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const request = mockRequest()
+    const promise = sut.handle(request)
+    await expect(promise).resolves.toEqual({
+      statusCode: 200,
+      body: deleteUniversityUseCaseStubReturn
     })
   })
 })
