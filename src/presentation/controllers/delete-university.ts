@@ -8,7 +8,8 @@ import {
 import {
   ok,
   badRequest,
-  internalServerError
+  internalServerError,
+  resourceNotFound
 } from '@/presentation/helpers/http-helper'
 
 export class DeleteUniversityController implements Controller {
@@ -26,6 +27,7 @@ export class DeleteUniversityController implements Controller {
       const universityId = await this.deleteUniversityUseCase.delete(
         request?.params?.universityId
       )
+      if (!universityId) return resourceNotFound()
       return ok(universityId)
     } catch (e) {
       return internalServerError()
