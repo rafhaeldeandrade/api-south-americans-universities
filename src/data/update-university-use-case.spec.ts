@@ -128,4 +128,19 @@ describe('UpdateUniversity use case', () => {
     const promise = sut.update(props)
     await expect(promise).rejects.toThrow()
   })
+
+  it('should return the correct values on success', async () => {
+    const { sut } = makeSut()
+    const props = mockProps()
+    const promise = sut.update(props)
+    await expect(promise).resolves.toEqual({
+      id: loadUniversityByIdRepositoryStubReturn.id,
+      name: expect.any(String),
+      country: loadUniversityByIdRepositoryStubReturn.country,
+      stateProvince: loadUniversityByIdRepositoryStubReturn.stateProvince,
+      domains: expect.any(Array),
+      webPages: expect.any(Array),
+      alphaTwoCode: loadUniversityByIdRepositoryStubReturn.alphaTwoCode
+    })
+  })
 })
