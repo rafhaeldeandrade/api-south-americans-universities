@@ -40,4 +40,15 @@ describe('AddUniversity Controller', () => {
     const { sut } = makeSut()
     expect(sut.handle).toBeDefined()
   })
+
+  it('should call schemaValidator.validate with the correct values', async () => {
+    const { sut, schemaValidatorStub } = makeSut()
+    const request = mockRequest()
+    const validateSpy = jest.spyOn(schemaValidatorStub, 'validate')
+    await sut.handle(request)
+    expect(validateSpy).toHaveBeenCalledTimes(1)
+    expect(validateSpy).toHaveBeenCalledWith({
+      universityId: request.params.universityId
+    })
+  })
 })
