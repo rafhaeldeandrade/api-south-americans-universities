@@ -7,7 +7,7 @@ import {
   AddUniversityUseCaseOutput
 } from '@/domain/contracts'
 
-class SchemaValidationStub implements SchemaValidator {
+class SchemaValidatorStub implements SchemaValidator {
   async validate(input: any): Promise<Error | null> {
     return null
   }
@@ -32,20 +32,20 @@ class AddUniversityUseCaseStub implements AddUniversityUseCase {
 
 interface SutTypes {
   sut: AddUniversityController
-  schemaValidationStub: SchemaValidator
+  schemaValidatorStub: SchemaValidator
   addUniversityUseCaseStub: AddUniversityUseCase
 }
 
 function makeSut(): SutTypes {
-  const schemaValidationStub = new SchemaValidationStub()
+  const schemaValidatorStub = new SchemaValidatorStub()
   const addUniversityUseCaseStub = new AddUniversityUseCaseStub()
   const sut = new AddUniversityController(
-    schemaValidationStub,
+    schemaValidatorStub,
     addUniversityUseCaseStub
   )
   return {
     sut,
-    schemaValidationStub,
+    schemaValidatorStub,
     addUniversityUseCaseStub
   }
 }
@@ -75,19 +75,19 @@ describe('AddUniversity Controller', () => {
   })
 
   it('should call schemaValidator.validate with the correct values', async () => {
-    const { sut, schemaValidationStub } = makeSut()
+    const { sut, schemaValidatorStub } = makeSut()
     const httpRequest = mockRequest()
-    const validateSpy = jest.spyOn(schemaValidationStub, 'validate')
+    const validateSpy = jest.spyOn(schemaValidatorStub, 'validate')
     await sut.handle(httpRequest)
     expect(validateSpy).toHaveBeenCalledTimes(1)
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 
   it('should return 400 if schemaValidator.validate returns an error', async () => {
-    const { sut, schemaValidationStub } = makeSut()
+    const { sut, schemaValidatorStub } = makeSut()
     const httpRequest = mockRequest()
     const error = new Error('teste')
-    jest.spyOn(schemaValidationStub, 'validate').mockResolvedValueOnce(error)
+    jest.spyOn(schemaValidatorStub, 'validate').mockResolvedValueOnce(error)
     const promise = sut.handle(httpRequest)
     await expect(promise).resolves.toEqual({
       statusCode: 400,
@@ -99,10 +99,10 @@ describe('AddUniversity Controller', () => {
   })
 
   it('should return 500 if schemaValidator.validate throws an error', async () => {
-    const { sut, schemaValidationStub } = makeSut()
+    const { sut, schemaValidatorStub } = makeSut()
     const httpRequest = mockRequest()
     jest
-      .spyOn(schemaValidationStub, 'validate')
+      .spyOn(schemaValidatorStub, 'validate')
       .mockRejectedValueOnce(new Error())
     const promise = sut.handle(httpRequest)
     await expect(promise).resolves.toEqual({
