@@ -72,3 +72,13 @@ export interface UpdateUniversityRepository {
     props: UpdateUniversityRepositoryInput
   ) => Promise<UpdateUniversityRepositoryOutput>
 }
+
+export type DeleteUniversityRepositoryInput = string
+
+export type DeleteUniversityRepositoryOutput = void
+
+export interface DeleteUniversityRepository {
+  delete: (
+    id: DeleteUniversityRepositoryInput
+  ) => Promise<DeleteUniversityRepositoryOutput>
+}
