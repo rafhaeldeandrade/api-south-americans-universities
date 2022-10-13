@@ -19,7 +19,7 @@ export class LoadUniversitiesController implements Controller {
   async handle(request: HttpRequest) {
     try {
       const error = await this.schemaValidator.validate({
-        page: request?.query?.page,
+        page: request?.query?.page ? Number(request.query.page) : undefined,
         country: request?.query?.country
       })
       if (error) return badRequest(error)
