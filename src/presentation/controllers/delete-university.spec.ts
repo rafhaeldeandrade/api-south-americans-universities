@@ -1,6 +1,11 @@
 import { DeleteUniversityController } from '@/presentation/controllers/delete-university'
 import { SchemaValidator } from '@/presentation/contracts'
 import { faker } from '@faker-js/faker'
+import {
+  DeleteUniversityUseCase,
+  DeleteUniversityUseCaseInput,
+  DeleteUniversityUseCaseOutput
+} from '@/domain/contracts'
 
 class SchemaValidatorStub implements SchemaValidator {
   async validate(input: any): Promise<Error | null> {
@@ -8,17 +13,34 @@ class SchemaValidatorStub implements SchemaValidator {
   }
 }
 
+const deleteUniversityUseCaseStubReturn = {
+  id: faker.datatype.uuid()
+}
+class DeleteUniversityUseCaseStub implements DeleteUniversityUseCase {
+  async delete(
+    universityId: DeleteUniversityUseCaseInput
+  ): Promise<DeleteUniversityUseCaseOutput> {
+    return deleteUniversityUseCaseStubReturn
+  }
+}
+
 interface SutTypes {
   sut: DeleteUniversityController
   schemaValidatorStub: SchemaValidator
+  deleteUniversityUseCaseStub: DeleteUniversityUseCase
 }
 
 function makeSut(): SutTypes {
   const schemaValidatorStub = new SchemaValidatorStub()
-  const sut = new DeleteUniversityController(schemaValidatorStub)
+  const deleteUniversityUseCaseStub = new DeleteUniversityUseCaseStub()
+  const sut = new DeleteUniversityController(
+    schemaValidatorStub,
+    deleteUniversityUseCaseStub
+  )
   return {
     sut,
-    schemaValidatorStub
+    schemaValidatorStub,
+    deleteUniversityUseCaseStub
   }
 }
 
@@ -54,11 +76,11 @@ describe('AddUniversity Controller', () => {
 
   it('should return 500 if schemaValidator.validate throws an error', async () => {
     const { sut, schemaValidatorStub } = makeSut()
-    const httpRequest = mockRequest()
+    const request = mockRequest()
     jest
       .spyOn(schemaValidatorStub, 'validate')
       .mockRejectedValueOnce(new Error())
-    const promise = sut.handle(httpRequest)
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual({
       statusCode: 500,
       body: {
@@ -70,10 +92,10 @@ describe('AddUniversity Controller', () => {
 
   it('should return 400 if schemaValidator.validate returns an error', async () => {
     const { sut, schemaValidatorStub } = makeSut()
-    const httpRequest = mockRequest()
+    const request = mockRequest()
     const error = new Error('teste')
     jest.spyOn(schemaValidatorStub, 'validate').mockResolvedValueOnce(error)
-    const promise = sut.handle(httpRequest)
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual({
       statusCode: 400,
       body: {
@@ -81,5 +103,14 @@ describe('AddUniversity Controller', () => {
         [error.name]: error.message
       }
     })
+  })
+
+  it('should call deleteUniversityUseCase.delete with the correct values', async () => {
+    const { sut, deleteUniversityUseCaseStub } = makeSut()
+    const addSpy = jest.spyOn(deleteUniversityUseCaseStub, 'delete')
+    const request = mockRequest()
+    await sut.handle(request)
+    expect(addSpy).toHaveBeenCalledTimes(1)
+    expect(addSpy).toHaveBeenCalledWith(request.params.universityId)
   })
 })
