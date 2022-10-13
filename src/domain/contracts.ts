@@ -67,3 +67,15 @@ export interface UpdateUniversityUseCase {
     props: UpdateUniversityUseCaseInput
   ) => Promise<UpdateUniversityUseCaseOutput>
 }
+
+export type DeleteUniversityUseCaseInput = string
+
+export type DeleteUniversityUseCaseOutput = {
+  id: string
+}
+
+export interface DeleteUniversityUseCase {
+  delete: (
+    universityId: DeleteUniversityUseCaseInput
+  ) => Promise<DeleteUniversityUseCaseOutput>
+}
