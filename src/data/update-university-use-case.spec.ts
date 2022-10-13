@@ -2,15 +2,12 @@ import { faker } from '@faker-js/faker'
 
 import { UpdateUniversity } from '@/data/update-university-use-case'
 import {
-  LoadUniversityByIdRepository,
-  LoadUniversityByIdRepositoryInput,
-  LoadUniversityByIdRepositoryOutput,
   UpdateUniversityRepository,
   UpdateUniversityRepositoryInput,
   UpdateUniversityRepositoryOutput
 } from '@/data/contracts'
 
-const loadUniversityByIdRepositoryStubReturn = {
+const updateUniversityRepositoryStubReturn = {
   id: faker.datatype.uuid(),
   name: faker.name.fullName(),
   country: faker.address.country(),
@@ -19,39 +16,24 @@ const loadUniversityByIdRepositoryStubReturn = {
   webPages: [faker.internet.url()],
   alphaTwoCode: faker.address.countryCode()
 }
-class LoadUniversityByIdRepositoryStub implements LoadUniversityByIdRepository {
-  async load(
-    id: LoadUniversityByIdRepositoryInput
-  ): Promise<LoadUniversityByIdRepositoryOutput> {
-    return loadUniversityByIdRepositoryStubReturn
-  }
-}
-
 class UpdateUniversityRepositoryStub implements UpdateUniversityRepository {
   async update(
     props: UpdateUniversityRepositoryInput
   ): Promise<UpdateUniversityRepositoryOutput> {
-    return loadUniversityByIdRepositoryStubReturn
+    return updateUniversityRepositoryStubReturn
   }
 }
 
 interface SutTypes {
   sut: UpdateUniversity
-  loadUniversityByIdRepositoryStub: LoadUniversityByIdRepository
   updateUniversityRepositoryStub: UpdateUniversityRepository
 }
 
 function makeSut(): SutTypes {
-  const loadUniversityByIdRepositoryStub =
-    new LoadUniversityByIdRepositoryStub()
   const updateUniversityRepositoryStub = new UpdateUniversityRepositoryStub()
-  const sut = new UpdateUniversity(
-    loadUniversityByIdRepositoryStub,
-    updateUniversityRepositoryStub
-  )
+  const sut = new UpdateUniversity(updateUniversityRepositoryStub)
   return {
     sut,
-    loadUniversityByIdRepositoryStub,
     updateUniversityRepositoryStub
   }
 }
@@ -76,35 +58,6 @@ describe('UpdateUniversity use case', () => {
     expect(sut.update).toBeDefined()
   })
 
-  it('should call loadUniversityById.load with the correct values', async () => {
-    const { sut, loadUniversityByIdRepositoryStub } = makeSut()
-    const props = mockProps()
-    const loadSpy = jest.spyOn(loadUniversityByIdRepositoryStub, 'load')
-    await sut.update(props)
-    expect(loadSpy).toHaveBeenCalledTimes(1)
-    expect(loadSpy).toHaveBeenCalledWith(props.universityId)
-  })
-
-  it('should throw if loadUniversityByIdRepository.load throws', async () => {
-    const { sut, loadUniversityByIdRepositoryStub } = makeSut()
-    jest
-      .spyOn(loadUniversityByIdRepositoryStub, 'load')
-      .mockRejectedValueOnce(new Error())
-    const props = mockProps()
-    const promise = sut.update(props)
-    await expect(promise).rejects.toThrow()
-  })
-
-  it('should return null if loadUniversityByIdRepository.load didnt find a university', async () => {
-    const { sut, loadUniversityByIdRepositoryStub } = makeSut()
-    const props = mockProps()
-    jest
-      .spyOn(loadUniversityByIdRepositoryStub, 'load')
-      .mockResolvedValueOnce(null)
-    const promise = sut.update(props)
-    await expect(promise).resolves.toBeNull()
-  })
-
   it('should call updateUniversityRepository.update with the correct values', async () => {
     const { sut, updateUniversityRepositoryStub } = makeSut()
     const props = mockProps()
@@ -117,6 +70,16 @@ describe('UpdateUniversity use case', () => {
       domains: props.domains,
       webPages: props.webPages
     })
+  })
+
+  it('should return null if updateUniversityRepository.update return null', async () => {
+    const { sut, updateUniversityRepositoryStub } = makeSut()
+    const props = mockProps()
+    jest
+      .spyOn(updateUniversityRepositoryStub, 'update')
+      .mockResolvedValueOnce(null)
+    const promise = sut.update(props)
+    await expect(promise).resolves.toBeNull()
   })
 
   it('should throw if updateUniversityRepository.update throws', async () => {
@@ -134,13 +97,13 @@ describe('UpdateUniversity use case', () => {
     const props = mockProps()
     const promise = sut.update(props)
     await expect(promise).resolves.toEqual({
-      id: loadUniversityByIdRepositoryStubReturn.id,
+      id: updateUniversityRepositoryStubReturn.id,
       name: expect.any(String),
-      country: loadUniversityByIdRepositoryStubReturn.country,
-      stateProvince: loadUniversityByIdRepositoryStubReturn.stateProvince,
+      country: updateUniversityRepositoryStubReturn.country,
+      stateProvince: updateUniversityRepositoryStubReturn.stateProvince,
       domains: expect.any(Array),
       webPages: expect.any(Array),
-      alphaTwoCode: loadUniversityByIdRepositoryStubReturn.alphaTwoCode
+      alphaTwoCode: updateUniversityRepositoryStubReturn.alphaTwoCode
     })
   })
 })

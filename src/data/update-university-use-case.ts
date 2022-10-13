@@ -10,7 +10,6 @@ import {
 
 export class UpdateUniversity implements UpdateUniversityUseCase {
   constructor(
-    private readonly loadUniversityByIdRepository: LoadUniversityByIdRepository,
     private readonly updateUniversityRepository: UpdateUniversityRepository
   ) {}
 
@@ -18,16 +17,13 @@ export class UpdateUniversity implements UpdateUniversityUseCase {
     props: UpdateUniversityUseCaseInput
   ): Promise<UpdateUniversityUseCaseOutput> {
     const { universityId, name, webPages, domains } = props
-    const university = await this.loadUniversityByIdRepository.load(
-      universityId
-    )
-    if (!university) return null
     const updatedUniversity = await this.updateUniversityRepository.update({
       id: universityId,
       name,
       webPages,
       domains
     })
+    if (!updatedUniversity) return null
     return updatedUniversity
   }
 }
