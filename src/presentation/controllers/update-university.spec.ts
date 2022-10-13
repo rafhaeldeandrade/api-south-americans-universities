@@ -132,4 +132,17 @@ describe('UpdateUniversityController', () => {
       webPages: httpRequest.body.webPages
     })
   })
+
+  it('should return 404 if university was not found', async () => {
+    const { sut, updateUniversityUseCaseStub } = makeSut()
+    jest
+      .spyOn(updateUniversityUseCaseStub, 'update')
+      .mockResolvedValueOnce(null)
+    const props = mockRequest()
+    const promise = await sut.handle(props)
+    expect(promise).toEqual({
+      statusCode: 404,
+      body: {}
+    })
+  })
 })
