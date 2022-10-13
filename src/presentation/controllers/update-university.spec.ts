@@ -77,23 +77,23 @@ describe('UpdateUniversityController', () => {
   it('should call schemaValidator.validate with the correct values', () => {
     const { sut, schemaValidatorStub } = makeSut()
     const validateSpy = jest.spyOn(schemaValidatorStub, 'validate')
-    const httpRequest = mockRequest()
-    sut.handle(httpRequest)
+    const request = mockRequest()
+    sut.handle(request)
     expect(validateSpy).toHaveBeenCalledTimes(1)
     expect(validateSpy).toHaveBeenCalledWith({
-      webPages: httpRequest.body.webPages,
-      name: httpRequest.body.name,
-      domains: httpRequest.body.domains,
-      universityId: httpRequest.params.universityId
+      webPages: request.body.webPages,
+      name: request.body.name,
+      domains: request.body.domains,
+      universityId: request.params.universityId
     })
   })
 
   it('should return 400 if schemaValidator.validate returns an error', async () => {
     const { sut, schemaValidatorStub } = makeSut()
-    const httpRequest = mockRequest()
+    const request = mockRequest()
     const error = new Error('teste')
     jest.spyOn(schemaValidatorStub, 'validate').mockResolvedValueOnce(error)
-    const promise = sut.handle(httpRequest)
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual({
       statusCode: 400,
       body: {
@@ -105,11 +105,11 @@ describe('UpdateUniversityController', () => {
 
   it('should return 500 if schemaValidator.validate throws an error', async () => {
     const { sut, schemaValidatorStub } = makeSut()
-    const httpRequest = mockRequest()
+    const request = mockRequest()
     jest
       .spyOn(schemaValidatorStub, 'validate')
       .mockRejectedValueOnce(new Error())
-    const promise = sut.handle(httpRequest)
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual({
       statusCode: 500,
       body: {
@@ -122,14 +122,14 @@ describe('UpdateUniversityController', () => {
   it('should call updateUniversityUseCase.update with the correct values', async () => {
     const { sut, updateUniversityUseCaseStub } = makeSut()
     const addSpy = jest.spyOn(updateUniversityUseCaseStub, 'update')
-    const httpRequest = mockRequest()
-    await sut.handle(httpRequest)
+    const request = mockRequest()
+    await sut.handle(request)
     expect(addSpy).toHaveBeenCalledTimes(1)
     expect(addSpy).toHaveBeenCalledWith({
-      universityId: httpRequest.params.universityId,
-      name: httpRequest.body.name,
-      domains: httpRequest.body.domains,
-      webPages: httpRequest.body.webPages
+      universityId: request.params.universityId,
+      name: request.body.name,
+      domains: request.body.domains,
+      webPages: request.body.webPages
     })
   })
 
@@ -138,8 +138,8 @@ describe('UpdateUniversityController', () => {
     jest
       .spyOn(updateUniversityUseCaseStub, 'update')
       .mockResolvedValueOnce(null)
-    const props = mockRequest()
-    const promise = await sut.handle(props)
+    const request = mockRequest()
+    const promise = await sut.handle(request)
     expect(promise).toEqual({
       statusCode: 404,
       body: {}
@@ -148,8 +148,8 @@ describe('UpdateUniversityController', () => {
 
   it('should return 200 on success', async () => {
     const { sut } = makeSut()
-    const httpRequest = mockRequest()
-    const promise = sut.handle(httpRequest)
+    const request = mockRequest()
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual({
       statusCode: 200,
       body: updateUniversityUseCaseStubReturn

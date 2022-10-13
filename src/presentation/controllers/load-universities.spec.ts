@@ -96,11 +96,11 @@ describe('LoadUniversities Controller', () => {
 
   it('should return 500 if schemaValidator.validate throws an error', async () => {
     const { sut, schemaValidatorStub } = makeSut()
-    const httpRequest = mockRequest()
+    const request = mockRequest()
     jest
       .spyOn(schemaValidatorStub, 'validate')
       .mockRejectedValueOnce(new Error())
-    const promise = sut.handle(httpRequest)
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual({
       statusCode: 500,
       body: {
@@ -113,17 +113,12 @@ describe('LoadUniversities Controller', () => {
   it('should call loadUniversitiesUseCase with correct values', async () => {
     const { sut, loadUniversitiesUseCaseStub } = makeSut()
     const loadSpy = jest.spyOn(loadUniversitiesUseCaseStub, 'load')
-    const fakeHttpRequest = {
-      query: {
-        page: faker.datatype.number(20),
-        country: faker.address.country()
-      }
-    }
-    await sut.handle(fakeHttpRequest)
+    const request = mockRequest()
+    await sut.handle(request)
     expect(loadSpy).toHaveBeenCalledTimes(1)
     expect(loadSpy).toHaveBeenCalledWith({
-      page: fakeHttpRequest.query.page,
-      country: fakeHttpRequest.query.country
+      page: request.query.page,
+      country: request.query.country
     })
   })
 
@@ -132,25 +127,15 @@ describe('LoadUniversities Controller', () => {
     jest
       .spyOn(loadUniversitiesUseCaseStub, 'load')
       .mockRejectedValueOnce(new Error())
-    const fakeHttpRequest = {
-      query: {
-        page: faker.datatype.number(20),
-        country: faker.address.country()
-      }
-    }
-    const promise = sut.handle(fakeHttpRequest)
+    const request = mockRequest()
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual(internalServerError())
   })
 
   it('should return 200 on success', async () => {
     const { sut } = makeSut()
-    const fakeHttpRequest = {
-      query: {
-        page: faker.datatype.number(20),
-        country: faker.address.country()
-      }
-    }
-    const promise = sut.handle(fakeHttpRequest)
+    const request = mockRequest()
+    const promise = sut.handle(request)
     await expect(promise).resolves.toEqual(
       ok(LoadUniversitiesUseCaseStubReturn)
     )
