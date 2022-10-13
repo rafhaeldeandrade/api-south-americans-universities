@@ -4,7 +4,10 @@ import { UpdateUniversity } from '@/data/update-university-use-case'
 import {
   LoadUniversityByIdRepository,
   LoadUniversityByIdRepositoryInput,
-  LoadUniversityByIdRepositoryOutput
+  LoadUniversityByIdRepositoryOutput,
+  UpdateUniversityRepository,
+  UpdateUniversityRepositoryInput,
+  UpdateUniversityRepositoryOutput
 } from '@/data/contracts'
 
 const loadUniversityByIdRepositoryStubReturn = {
@@ -24,18 +27,32 @@ class LoadUniversityByIdRepositoryStub implements LoadUniversityByIdRepository {
   }
 }
 
+class UpdateUniversityRepositoryStub implements UpdateUniversityRepository {
+  async update(
+    props: UpdateUniversityRepositoryInput
+  ): Promise<UpdateUniversityRepositoryOutput> {
+    return loadUniversityByIdRepositoryStubReturn
+  }
+}
+
 interface SutTypes {
   sut: UpdateUniversity
   loadUniversityByIdRepositoryStub: LoadUniversityByIdRepository
+  updateUniversityRepositoryStub: UpdateUniversityRepository
 }
 
 function makeSut(): SutTypes {
   const loadUniversityByIdRepositoryStub =
     new LoadUniversityByIdRepositoryStub()
-  const sut = new UpdateUniversity(loadUniversityByIdRepositoryStub)
+  const updateUniversityRepositoryStub = new UpdateUniversityRepositoryStub()
+  const sut = new UpdateUniversity(
+    loadUniversityByIdRepositoryStub,
+    updateUniversityRepositoryStub
+  )
   return {
     sut,
-    loadUniversityByIdRepositoryStub
+    loadUniversityByIdRepositoryStub,
+    updateUniversityRepositoryStub
   }
 }
 
@@ -76,5 +93,29 @@ describe('UpdateUniversity use case', () => {
     const props = mockProps()
     const promise = sut.update(props)
     await expect(promise).rejects.toThrow()
+  })
+
+  it('should return null if loadUniversityByIdRepository.load didnt find a university', async () => {
+    const { sut, loadUniversityByIdRepositoryStub } = makeSut()
+    const props = mockProps()
+    jest
+      .spyOn(loadUniversityByIdRepositoryStub, 'load')
+      .mockResolvedValueOnce(null)
+    const promise = sut.update(props)
+    await expect(promise).resolves.toBeNull()
+  })
+
+  it('should call updateUniversityRepository.update with the correct values', async () => {
+    const { sut, updateUniversityRepositoryStub } = makeSut()
+    const props = mockProps()
+    const updateSpy = jest.spyOn(updateUniversityRepositoryStub, 'update')
+    await sut.update(props)
+    expect(updateSpy).toHaveBeenCalledTimes(1)
+    expect(updateSpy).toHaveBeenCalledWith({
+      id: props.universityId,
+      name: props.name,
+      domains: props.domains,
+      webPages: props.webPages
+    })
   })
 })
