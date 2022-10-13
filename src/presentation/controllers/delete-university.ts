@@ -6,6 +6,7 @@ import {
   SchemaValidator
 } from '@/presentation/contracts'
 import {
+  ok,
   badRequest,
   internalServerError
 } from '@/presentation/helpers/http-helper'
@@ -22,8 +23,10 @@ export class DeleteUniversityController implements Controller {
         universityId: request?.params?.universityId
       })
       if (error) return badRequest(error)
-      await this.deleteUniversityUseCase.delete(request?.params?.universityId)
-      return null as unknown as HttpResponse
+      const universityId = await this.deleteUniversityUseCase.delete(
+        request?.params?.universityId
+      )
+      return ok(universityId)
     } catch (e) {
       return internalServerError()
     }
