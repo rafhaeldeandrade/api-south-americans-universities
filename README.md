@@ -16,10 +16,12 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 - Você já instalou e garantiu que o MongoDB 4.4 está rodando na máquina - [veja como instalar e rodar aqui](https://www.mongodb.com/docs/v4.4/tutorial/install-mongodb-on-ubuntu/)
 - Você já preencheu o arquivo `.env` na raiz do projeto, conforme o `.enx.example`, exemplo:
 
-  ```
-  MONGO_URL=mongodb://localhost:27017
-  PORT=4000
-  ```
+---
+
+```
+MONGO_URL=mongodb://localhost:27017
+PORT=4000
+```
 
 ## 🚀 Instalando
 
@@ -156,6 +158,19 @@ Cria uma universidade
 
 ```http
 POST /api/universities
+```
+
+**Propriedades**
+_name_: `string` mínimo 5 caracteres, máximo 100 caracteres
+_country_: `string` mínimo 5 caracteres, máximo 25 caracteres
+_stateProvince_: `null` ou `string` mínimo 5 caracteres, máximo 25 caracteres
+_domains_: `array` de `strings` mínimo 5 caracteres, máximo 100 caracteres
+_webPages_: `array` de `strings` mínimo 5 caracteres, máximo 100 caracteres
+_alphaTwoCode_: `string` mínimo 2 caracteres, máximo 2 caracteres
+
+**Body**
+
+```json
 {
   "name": "Unifil",
   "country": "Brazil",
@@ -185,6 +200,49 @@ POST /api/universities
 ```
 
 ### PUT /api/universities/:id
+
+Altera `nome`, `domains` e `webPages` de uma universidade previamente cadastrada
+
+**Requisição**
+
+```http
+PUT /api/universities/6348a93ce2331b3ac341aee3
+```
+
+**Propriedades**
+_name_: `string` mínimo 5 caracteres, máximo 100 caracteres
+_domains_: `array` de `strings` mínimo 5 caracteres, máximo 100 caracteres
+_webPages_: `array` de `strings` mínimo 5 caracteres, máximo 100 caracteres
+
+**Body**
+
+```json
+{
+  "name": "Centro Universitário Filadelfia",
+  "domains": ["unifil.br"],
+  "webPages": ["https://unifil.br"]
+}
+```
+
+**Resposta**
+
+```http
+{
+  "id": "6348a93ce2331b3ac341aee3",
+  "name": "Centro Universitário Filadelfia",
+  "country": "Brazil",
+  "stateProvince": "Paraná",
+  "domains": [
+    "unifil.br"
+  ],
+  "webPages": [
+    "https://unifil.br"
+  ],
+  "alphaTwoCode": "BR"
+}
+```
+
+### DELETE /api/universities/:id
 
 Delete uma universidade previamente cadastrada
 
