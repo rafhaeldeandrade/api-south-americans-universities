@@ -162,10 +162,15 @@ POST /api/universities
 
 **Propriedades**
 _name_: `string` mínimo 5 caracteres, máximo 100 caracteres
+
 _country_: `string` mínimo 5 caracteres, máximo 25 caracteres
+
 _stateProvince_: `null` ou `string` mínimo 5 caracteres, máximo 25 caracteres
+
 _domains_: `array` de `strings` mínimo 5 caracteres, máximo 100 caracteres
+
 _webPages_: `array` de `strings` mínimo 5 caracteres, máximo 100 caracteres
+
 _alphaTwoCode_: `string` mínimo 2 caracteres, máximo 2 caracteres
 
 **Body**
@@ -210,8 +215,11 @@ PUT /api/universities/6348a93ce2331b3ac341aee3
 ```
 
 **Propriedades**
+
 _name_: `string` mínimo 5 caracteres, máximo 100 caracteres
+
 _domains_: `array` de `strings` mínimo 5 caracteres, máximo 100 caracteres
+
 _webPages_: `array` de `strings` mínimo 5 caracteres, máximo 100 caracteres
 
 **Body**
